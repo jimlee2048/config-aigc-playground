@@ -6,6 +6,7 @@
 # dir = "" ## optional, -> $MODEL_PATH/{model.dir}
 # [[models.type.items]]
 # category = "" ## optional, sd15, sdxl, etc. will use as a directory name. default: None
+# tags = [] ## optional, tags for filtering
 # dir = ""  ## optional, -> $MODEL_PATH/{model.items.dir}
 # url = "https://example.com/model.ckpt"
 # filename = "model.ckpt" ## optional, default: original filename
@@ -28,12 +29,14 @@ url = "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/va
 ### anything v5
 [[models.checkpoints.items]]
 category = "sd15"
+tags = ["set-lite"]
 url = "https://civitai.com/api/download/models/30163?type=Model&format=SafeTensor&size=full&fp=fp16"
 filename = "AnythingV5_v5PrtRE.safetensors"
 
 ### dreamshaper 8
 [[models.checkpoints.items]]
 category = "sd15"
+tags = ["set-lite"]
 url = "https://civitai.com/api/download/models/128713?type=Model&format=SafeTensor&size=pruned&fp=fp16"
 
 ### dreamshaper 8 lcm
@@ -92,19 +95,31 @@ url = "https://huggingface.co/ostris/ip-composition-adapter/resolve/main/ip_plus
 ### origin sdxl 1.0
 [[models.checkpoints.items]]
 category = "sdxl"
+tags = ["set-lite"]
 url = "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
 [[models.checkpoints.items]]
 category = "sdxl"
 url = "https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
 [[models.vae.items]]
+category = "sdxl"
+tags = ["set-lite"]
 url = "https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors"
+
+### dreamshaper xl
+#### v2.1 turbo dpm++ sde
+[[models.checkpoints.items]]
+category = "sdxl"
+tags = ["set-lite"]
+url = "https://civitai.com/api/download/models/351306?type=Model&format=SafeTensor&size=full&fp=fp16"
 
 ### kohaku-xl
 [[models.checkpoints.items]]
 category = "sdxl"
+tags = ["set-lite"]
 url = "https://huggingface.co/KBlueLeaf/Kohaku-XL-Epsilon/resolve/main/kohaku-xl-epsilon-rev1.safetensors"
 [[models.vae.items]]
 category = "sdxl"
+tags = ["set-lite"]
 url = "https://huggingface.co/KBlueLeaf/Kohaku-XL-Epsilon/blob/main/vae/diffusion_pytorch_model.bin"
 filename = "vae_kohaku-xl-epsilon.bin"
 
@@ -122,8 +137,19 @@ filename = "vae_animagine-xl-3.1.safetensors"
 category = "sdxl"
 url = "https://huggingface.co/dataautogpt3/OpenDalleV1.1/resolve/main/OpenDalleV1.1.safetensors"
 
+### neta_art_xl v1.0
+[[models.checkpoints.items]]
+category = "sdxl"
+url = "https://civitai.com/api/download/models/457853?type=Model&format=SafeTensor&size=full&fp=fp16"
+
 
 ## sdxl loras
+### anime fix hands lora by @bdsqlsz
+[[models.loras.items]]
+category = "sdxl"
+tags = ["set-lite"]
+url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-5.2/resolve/main/Fixhands_anime_bdsqlsz_V1.safetensors"
+
 ### lcm lora (original)
 [[models.loras.items]]
 category = "sdxl"
@@ -134,10 +160,12 @@ filename = "lcm-lora-sdxl.safetensors"
 #### (fix) sampler: euler a; scheduler: normal
 [[models.loras.items]]
 category = "sdxl"
+tags = ["set-lite"]
 url = "https://civitai.com/api/download/models/246747?type=Model&format=SafeTensor"
 #### sampler: dpmpp_sde; scheduler: karras
 [[models.loras.items]]
 category = "sdxl"
+tags = ["set-lite"]
 url = "https://civitai.com/api/download/models/247778?type=Model&format=SafeTensor"
 #### sampler: lcm; scheduler: sgm_uniform
 [[models.loras.items]]
@@ -183,7 +211,7 @@ url = "https://huggingface.co/ostris/ip-composition-adapter/resolve/main/ip_plus
 
 ## sdxl revision
 [[models.clip_vision.items]]
-url = "https://huggingface.co/comfyanonymous/clip_vision_g/resolve/main/clip_vision_g.safetensors"
+url = "https://huggingface.co/stabilityai/control-lora/resolve/main/revision/clip_vision_g.safetensors"
 
 
 
