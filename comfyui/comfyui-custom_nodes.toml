@@ -1,0 +1,63 @@
+## example
+# [[custom_nodes]]
+# url = ""
+# post_script = "init-custom_node.sh" ## TODO
+
+# example
+## download_dir: $MODEL_PATH/type/category
+# [[models.type.items]]
+# category = "" ## sd15, sdxl, etc. will use as a directory name
+# url = "https://example.com/model.ckpt"
+# filename = "model.ckpt" ## default: original filename
+# post_script = "init-model.sh" ## TODO
+
+
+[[custom_nodes]]
+url = "https://github.com/ltdrdata/ComfyUI-Manager"
+
+[[custom_nodes]]
+url = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes"
+
+[[custom_nodes]]
+url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
+
+[[custom_nodes]]
+url = "https://github.com/cubiq/ComfyUI_InstantID"
+#TODO: download relative model
+
+[[custom_nodes]]
+url = "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
+#TODO: download relative model
+
+[[custom_nodes]]
+url = "https://github.com/talesofai/comfyui-browser"
+
+[[custom_nodes]]
+url = "https://github.com/crystian/ComfyUI-Crystools"
+
+[[custom_nodes]]
+url = "https://github.com/pythongosssss/ComfyUI-Custom-Scripts"
+
+[[custom_nodes]]
+url = "https://github.com/BennyKok/comfyui-deploy"
+
+[[custom_nodes]]
+url = "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
+
+[[custom_nodes]]
+url = "https://github.com/Acly/comfyui-inpaint-nodes"
+
+[[custom_nodes]]
+url = "https://github.com/huchenlei/ComfyUI-layerdiffuse"
+
+[[custom_nodes]]
+url = "https://github.com/pythongosssss/ComfyUI-WD14-Tagger"
+
+[[custom_nodes]]
+url = "https://github.com/11cafe/comfyui-workspace-manager"
+
+[[custom_nodes]]
+url = "https://github.com/jags111/efficiency-nodes-comfyui"
+
+[[custom_nodes]]
+url = "https://github.com/WASasquatch/was-node-suite-comfyui"

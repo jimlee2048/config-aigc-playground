@@ -1,0 +1,161 @@
+# example
+## download_dir: $MODEL_PATH/type/category
+# [[models.type.items]]
+# category = "" ## sd15, sdxl, etc. will use as a directory name. default is None
+# url = "https://example.com/model.ckpt"
+# filename = "model.ckpt" ## default: original filename
+# post_script = "init-model.sh" ## TODO
+
+
+# sd15
+## sd15 ckpts & vae
+### origin sd15
+[[models.checkpoints.items]]
+category = "sd15"
+url = "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt"
+[[models.vae.items]]
+category = "sd15"
+url = "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+
+### anything v5
+[[models.checkpoints.items]]
+category = "sd15"
+url = "https://civitai.com/api/download/models/30163?type=Model&format=SafeTensor&size=full&fp=fp16"
+filename = "AnythingV5_v5PrtRE.safetensors"
+
+### dreamshaper 8
+[[models.checkpoints.items]]
+category = "sd15"
+url = "https://civitai.com/api/download/models/128713?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+
+### dreamshaper 8 lcm
+[[models.checkpoints.items]]
+category = "sd15"
+url = "https://civitai.com/api/download/models/252914?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+
+### orangemix vae
+[[models.vae.items]]
+category = "sd15"
+url = "https://huggingface.co/WarriorMama777/OrangeMixs/resolve/main/VAEs/orangemix.vae.pt"
+
+### wd14 vae
+[[models.vae.items]]
+category = "sd15"
+url = "https://huggingface.co/hakurei/waifu-diffusion-v1-4/resolve/main/vae/kl-f8-anime2.ckpt"
+
+## sd15 loras
+### lcm lora
+[[models.loras.items]]
+category = "sd15"
+url = "https://huggingface.co/latent-consistency/lcm-lora-sdv1-5/resolve/main/pytorch_lora_weights.safetensors"
+filename = "lcm-lora-sdv1-5.safetensors"
+
+
+## sd15 controlnet
+#TODO
+
+
+
+# sdxl
+## sdxl ckpts & vae
+### origin sdxl 1.0
+[[models.checkpoints.items]]
+category = "sdxl"
+url = "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+[[models.checkpoints.items]]
+category = "sdxl"
+url = "https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+[[models.vae.items]]
+url = "https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors"
+
+### kohaku-xl
+[[models.checkpoints.items]]
+category = "sdxl"
+url = "https://huggingface.co/KBlueLeaf/Kohaku-XL-Epsilon/resolve/main/kohaku-xl-epsilon-rev1.safetensors"
+[[models.vae.items]]
+category = "sdxl"
+url = "https://huggingface.co/KBlueLeaf/Kohaku-XL-Epsilon/blob/main/vae/diffusion_pytorch_model.bin"
+filename = "vae_kohaku-xl-epsilon.bin"
+
+### animaginexl
+[[models.checkpoints.items]]
+category = "sdxl"
+url ="https://huggingface.co/cagliostrolab/animagine-xl-3.1/resolve/main/animagine-xl-3.1.safetensors"
+[[models.vae.items]]
+category = "sdxl"
+url = "https://huggingface.co/cagliostrolab/animagine-xl-3.1/resolve/main/vae/diffusion_pytorch_model.safetensors"
+filename = "vae_animagine-xl-3.1.safetensors"
+
+### opendalle
+[[models.checkpoints.items]]
+category = "sdxl"
+url = "https://huggingface.co/dataautogpt3/OpenDalleV1.1/resolve/main/OpenDalleV1.1.safetensors"
+
+
+## sdxl loras
+### lcm lora (original)
+[[models.loras.items]]
+category = "sdxl"
+url = "https://huggingface.co/latent-consistency/lcm-lora-sdxl/resolve/main/pytorch_lora_weights.safetensors"
+filename = "lcm-lora-sdxl.safetensors"
+
+### lcm & turbomix loras
+#### (fix) sampler: euler a; scheduler: normal
+[[models.loras.items]]
+category = "sdxl"
+url = "https://civitai.com/api/download/models/246747?type=Model&format=SafeTensor"
+#### sampler: dpmpp_sde; scheduler: karras
+[[models.loras.items]]
+category = "sdxl"
+url = "https://civitai.com/api/download/models/247778?type=Model&format=SafeTensor"
+#### sampler: lcm; scheduler: sgm_uniform
+[[models.loras.items]]
+url = "https://civitai.com/api/download/models/268475?type=Model&format=SafeTensor"
+
+### lightning loras
+#### 2step
+[[models.loras.items]]
+category = "sdxl"
+url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_2step_lora.safetensors"
+#### 4step
+[[models.loras.items]]
+category = "sdxl"
+url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_4step_lora.safetensors"
+#### 8step
+[[models.loras.items]]
+category = "sdxl"
+url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_8step_lora.safetensors"
+
+
+## sdxl controlnet
+#TODO
+
+
+## sdxl revision
+[[models.clip_vision.items]]
+url = "https://huggingface.co/comfyanonymous/clip_vision_g/resolve/main/clip_vision_g.safetensors"
+
+
+
+# sd cascade
+## original sd cascade
+### stage a (vae)
+[[models.vae.items]]
+category = "sd-cascade"
+url = "https://huggingface.co/stabilityai/stable-cascade/resolve/main/stage_a.safetensors"
+### stage b
+[[models.checkpoints.items]]
+category = "sd-cascade"
+url = "https://huggingface.co/stabilityai/stable-cascade/resolve/main/comfyui_checkpoints/stable_cascade_stage_b.safetensors"
+### stage c
+[[models.checkpoints.items]]
+category = "sd-cascade"
+url = "https://huggingface.co/stabilityai/stable-cascade/resolve/main/comfyui_checkpoints/stable_cascade_stage_c.safetensors"
+### effnet_encode (vae for stage c latent)
+[[models.vae.items]]
+category = "sd-cascade"
+url = "https://huggingface.co/stabilityai/stable-cascade/resolve/main/effnet_encoder.safetensors"
+### text_encoder (CLIP)
+[[models.clip.items]]
+category = "sd-cascade"
+url = "https://huggingface.co/stabilityai/stable-cascade/resolve/main/text_encoder/model.safetensors"
