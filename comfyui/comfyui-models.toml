@@ -1,11 +1,19 @@
-# example
-## download_dir: $MODEL_PATH/type/category
+# # example
+# # about download_dir:
+# # - default: $MODEL_PATH/type/category
+# # - priority: model.items.dir > model.dir > default
+# [models.type]
+# dir = "" ## optional, -> $MODEL_PATH/{model.dir}
 # [[models.type.items]]
-# category = "" ## sd15, sdxl, etc. will use as a directory name. default is None
+# category = "" ## optional, sd15, sdxl, etc. will use as a directory name. default: None
+# dir = ""  ## optional, -> $MODEL_PATH/{model.items.dir}
 # url = "https://example.com/model.ckpt"
-# filename = "model.ckpt" ## default: original filename
+# filename = "model.ckpt" ## optional, default: original filename
 # post_script = "init-model.sh" ## TODO
 
+# special path definition, will not respect items.category for these type
+[models.ipadapter]
+dir = "ipadapter"
 
 # sd15
 ## sd15 ckpts & vae
@@ -55,6 +63,29 @@ filename = "lcm-lora-sdv1-5.safetensors"
 #TODO
 
 
+## sd15 ipadapter
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15.safetensors"
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_light_v11.bin"
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-plus_sd15.safetensors"
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-plus-face_sd15.safetensors"
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-full-face_sd15.safetensors"
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_vit-G.safetensors"
+### ip-composition-adapter
+[[models.ipadapter.items]]
+category = "sd15"
+url = "https://huggingface.co/ostris/ip-composition-adapter/resolve/main/ip_plus_composition_sd15.safetensors"
 
 # sdxl
 ## sdxl ckpts & vae
@@ -129,6 +160,25 @@ url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightni
 
 ## sdxl controlnet
 #TODO
+
+
+## sdxl ipadapter
+[[models.ipadapter.items]]
+category = "sdxl"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter_sdxl_vit-h.safetensors"
+[[models.ipadapter.items]]
+category = "sdxl"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter-plus_sdxl_vit-h.safetensors"
+[[models.ipadapter.items]]
+category = "sdxl"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter-plus-face_sdxl_vit-h.safetensors"
+[[models.ipadapter.items]]
+category = "sdxl"
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter_sdxl.safetensors"
+### ip-composition-adapter
+[[models.ipadapter.items]]
+category = "sdxl"
+url = "https://huggingface.co/ostris/ip-composition-adapter/resolve/main/ip_plus_composition_sdxl.safetensors"
 
 
 ## sdxl revision

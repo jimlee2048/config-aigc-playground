@@ -1,15 +1,21 @@
-## example
+# # example
 # [[custom_nodes]]
 # url = ""
 # post_script = "init-custom_node.sh" ## TODO
 
-# example
-## download_dir: $MODEL_PATH/type/category
+# # example
+# # about download_dir:
+# # - default: $MODEL_PATH/type/category
+# # - priority: model.items.dir > model.dir > default
+# [models.type]
+# dir = "" ## optional, -> $MODEL_PATH/{model.dir}
 # [[models.type.items]]
-# category = "" ## sd15, sdxl, etc. will use as a directory name
+# category = "" ## optional, sd15, sdxl, etc. will use as a directory name. default: None
+# dir = ""  ## optional, -> $MODEL_PATH/{model.items.dir}
 # url = "https://example.com/model.ckpt"
-# filename = "model.ckpt" ## default: original filename
+# filename = "model.ckpt" ## optional, default: original filename
 # post_script = "init-model.sh" ## TODO
+
 
 
 [[custom_nodes]]
@@ -23,11 +29,21 @@ url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 
 [[custom_nodes]]
 url = "https://github.com/cubiq/ComfyUI_InstantID"
-#TODO: download relative model
+# TODO: 
+# - add pose_script to install insightface
+# - download antelopev2 model into $MODEL_PATH/insightface/models/antelopev2
+# - download instandid model into $MODEL_PATH/instantid (ip-adapter.bin & controlnet)
+# ref: https://github.com/cubiq/ComfyUI_InstantID#installation
+
 
 [[custom_nodes]]
 url = "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
-#TODO: download relative model
+[[models.clip_vision.items]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors"
+filename = "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
+[[models.clip_vision.items]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_encoder/model.safetensors"
+filename = "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors"
 
 [[custom_nodes]]
 url = "https://github.com/talesofai/comfyui-browser"
