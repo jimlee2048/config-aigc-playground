@@ -39,8 +39,7 @@ def downloader(url, dir, filename=None, overwrite=False, timeout=30, max_retries
         except Exception as e:
             print(f"🔴 Error: {e}")
             retries += 1
-            print(f"⏳ Retrying download, sleep {
-                  retry_interval}s... ({retries}/{max_retries})")
+            print(f"⏳ Retrying download, sleep {retry_interval}s... ({retries}/{max_retries})")
             time.sleep(retry_interval)
     print(f"🔴 Failed to download: {url}")
     if download_path and os.path.exists(download_path):
@@ -73,8 +72,7 @@ def downloader_aria2(url, dir, filename=None, timeout=30, max_retries=3, retry_i
         except Exception as e:
             print(f"🟡 Error downloading file: {e}")
             retries += 1
-            print(f"⏳ Retrying download, sleep {
-                  retry_interval}s... ({retries}/{max_retries})")
+            print(f"⏳ Retrying download, sleep {retry_interval}s... ({retries}/{max_retries})")
             time.sleep(retry_interval)
     if retries >= max_retries:
         print(f"🔴 Failed to download: {url}")
@@ -85,8 +83,7 @@ def downloader_aria2(url, dir, filename=None, timeout=30, max_retries=3, retry_i
 def download_models(models_dict, model_dir, include_category=None, include_tags=None, downloader=downloader):
     print(f"⬇️ Start: downloads models to {model_dir}")
     if include_category:
-        print(f"🟡 Include categories: {
-              include_category}, will download these model categories only.")
+        print(f"🟡 Include categories: {include_category}, will download these model categories only.")
     total_list = []
     downloaded_list = []
     skipped_list = []
@@ -96,8 +93,7 @@ def download_models(models_dict, model_dir, include_category=None, include_tags=
             model_category = model.get('category')
             model_tags = model.get('tags')
             if include_category and model_category and model_category not in include_category:
-                print(f"🟡 Skipped: {model['url']} not in category {
-                      include_category}")
+                print(f"🟡 Skipped: {model['url']} not in category {include_category}")
                 skipped_list.append(model['url'])
                 continue
             if include_tags and model_tags and not set(model_tags).isdisjoint(include_tags):

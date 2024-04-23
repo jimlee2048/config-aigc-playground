@@ -35,7 +35,6 @@ url = "https://github.com/cubiq/ComfyUI_InstantID"
 # - download instandid model into $MODEL_DIR/instantid (ip-adapter.bin & controlnet)
 # ref: https://github.com/cubiq/ComfyUI_InstantID#installation
 
-
 [[custom_nodes]]
 url = "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
 [[models.clip_vision.items]]
