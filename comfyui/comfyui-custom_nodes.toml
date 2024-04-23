@@ -77,3 +77,12 @@ url = "https://github.com/jags111/efficiency-nodes-comfyui"
 
 [[custom_nodes]]
 url = "https://github.com/WASasquatch/was-node-suite-comfyui"
+
+[[custom_nodes]]
+url = "https://github.com/mcmonkeyprojects/sd-dynamic-thresholding"
+
+[[custom_nodes]]
+url = "https://github.com/rgthree/rgthree-comfy"
+
+[[custom_nodes]]
+url = "https://github.com/yolain/ComfyUI-Easy-Use"
