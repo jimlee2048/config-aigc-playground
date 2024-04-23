@@ -1,13 +1,13 @@
 # # example
 # # about download_dir:
-# # - default: $MODEL_PATH/type/category
+# # - default: $MODEL_DIR/type/category
 # # - priority: model.items.dir > model.dir > default
 # [models.type]
-# dir = "" ## optional, -> $MODEL_PATH/{model.dir}
+# dir = "" ## optional, -> $MODEL_DIR/{model.dir}
 # [[models.type.items]]
 # category = "" ## optional, sd15, sdxl, etc. will use as a directory name. default: None
 # tags = [] ## optional, tags for filtering
-# dir = ""  ## optional, -> $MODEL_PATH/{model.items.dir}
+# dir = ""  ## optional, -> $MODEL_DIR/{model.items.dir}
 # url = "https://example.com/model.ckpt"
 # filename = "model.ckpt" ## optional, default: original filename
 # post_script = "init-model.sh" ## TODO
@@ -55,12 +55,25 @@ category = "sd15"
 url = "https://huggingface.co/hakurei/waifu-diffusion-v1-4/resolve/main/vae/kl-f8-anime2.ckpt"
 
 ## sd15 loras
-### lcm lora
+### lcm sd15 lora
 [[models.loras.items]]
 category = "sd15"
 url = "https://huggingface.co/latent-consistency/lcm-lora-sdv1-5/resolve/main/pytorch_lora_weights.safetensors"
 filename = "lcm-lora-sdv1-5.safetensors"
 
+# ### hyper-sd sd15 lora
+# [[models.loras.items]]
+# category = "sd15"
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SD15-1step-lora.safetensors"
+# [[models.loras.items]]
+# category = "sd15"
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SD15-2steps-lora.safetensors"
+# [[models.loras.items]]
+# category = "sd15"
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SD15-4steps-lora.safetensors"
+# [[models.loras.items]]
+# category = "sd15"
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SD15-8steps-lora.safetensors"
 
 ## sd15 controlnet
 #TODO
@@ -172,18 +185,32 @@ url = "https://civitai.com/api/download/models/247778?type=Model&format=SafeTens
 url = "https://civitai.com/api/download/models/268475?type=Model&format=SafeTensor"
 
 ### lightning loras
-#### 2step
+# #### 2step
+# [[models.loras.items]]
+# category = "sdxl"
+# url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_2step_lora.safetensors"
+# #### 4step
+# [[models.loras.items]]
+# category = "sdxl"
+# url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_4step_lora.safetensors"
+# #### 8step
+# [[models.loras.items]]
+# category = "sdxl"
+# url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_8step_lora.safetensors"
+
+# hyper-sd sdxl lora
 [[models.loras.items]]
 category = "sdxl"
-url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_2step_lora.safetensors"
-#### 4step
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-1step-lora.safetensors"
 [[models.loras.items]]
 category = "sdxl"
-url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_4step_lora.safetensors"
-#### 8step
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-2steps-lora.safetensors"
 [[models.loras.items]]
 category = "sdxl"
-url = "https://huggingface.co/ByteDance/SDXL-Lightning/resolve/main/sdxl_lightning_8step_lora.safetensors"
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-4steps-lora.safetensors"
+[[models.loras.items]]
+category = "sdxl"
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-8steps-lora.safetensors"
 
 
 ## sdxl controlnet

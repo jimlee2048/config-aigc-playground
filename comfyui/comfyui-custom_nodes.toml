@@ -5,13 +5,13 @@
 
 # # example
 # # about download_dir:
-# # - default: $MODEL_PATH/type/category
+# # - default: $MODEL_DIR/type/category
 # # - priority: model.items.dir > model.dir > default
 # [models.type]
-# dir = "" ## optional, -> $MODEL_PATH/{model.dir}
+# dir = "" ## optional, -> $MODEL_DIR/{model.dir}
 # [[models.type.items]]
 # category = "" ## optional, sd15, sdxl, etc. will use as a directory name. default: None
-# dir = ""  ## optional, -> $MODEL_PATH/{model.items.dir}
+# dir = ""  ## optional, -> $MODEL_DIR/{model.items.dir}
 # url = "https://example.com/model.ckpt"
 # filename = "model.ckpt" ## optional, default: original filename
 # post_script = "init-model.sh" ## TODO
@@ -31,8 +31,8 @@ url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 url = "https://github.com/cubiq/ComfyUI_InstantID"
 # TODO: 
 # - add pose_script to install insightface
-# - download antelopev2 model into $MODEL_PATH/insightface/models/antelopev2
-# - download instandid model into $MODEL_PATH/instantid (ip-adapter.bin & controlnet)
+# - download antelopev2 model into $MODEL_DIR/insightface/models/antelopev2
+# - download instandid model into $MODEL_DIR/instantid (ip-adapter.bin & controlnet)
 # ref: https://github.com/cubiq/ComfyUI_InstantID#installation
 
 

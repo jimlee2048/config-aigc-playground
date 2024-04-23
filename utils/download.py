@@ -82,8 +82,8 @@ def downloader_aria2(url, dir, filename=None, timeout=30, max_retries=3, retry_i
     print(f"🟢 {filename} -> {dir}: downloaded.")
     return True
 
-def download_models(models_dict, model_path, include_category=None, include_tags=None, downloader=downloader):
-    print(f"⬇️ Start: downloads models to {model_path}")
+def download_models(models_dict, model_dir, include_category=None, include_tags=None, downloader=downloader):
+    print(f"⬇️ Start: downloads models to {model_dir}")
     if include_category:
         print(f"🟡 Include categories: {
               include_category}, will download these model categories only.")
@@ -106,7 +106,7 @@ def download_models(models_dict, model_path, include_category=None, include_tags
                 continue
             download_url = model['url']
             total_list.append(download_url)
-            download_dir = os.path.join(model_path, model.get('dir') or type.get(
+            download_dir = os.path.join(model_dir, model.get('dir') or type.get(
                 'dir') or os.path.join(type_name, model.get('category') or type_name))
             download_filename = model.get('filename')
             download_status = downloader(
@@ -121,7 +121,7 @@ def download_models(models_dict, model_path, include_category=None, include_tags
     downloaded_counts = len(downloaded_list)
     skipped_counts = len(skipped_list)
     error_counts = len(error_list)
-    print(f"⬇️ Finished: downloads models to {model_path}")
+    print(f"⬇️ Finished: downloads models to {model_dir}")
     print(f"📦 Total: {total_counts}"
           f"\n🟢 Downloaded: {downloaded_counts}"
           f"\n🟡 Skipped: {skipped_counts}"

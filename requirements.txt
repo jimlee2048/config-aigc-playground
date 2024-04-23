@@ -1,0 +1,4 @@
+aria2p
+requests
+tqdm
+toml
