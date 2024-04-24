@@ -85,3 +85,6 @@ url = "https://github.com/rgthree/rgthree-comfy"
 
 [[custom_nodes]]
 url = "https://github.com/yolain/ComfyUI-Easy-Use"
+
+[[custom_nodes]]
+url = "https://github.com/Trung0246/ComfyUI-0246"
