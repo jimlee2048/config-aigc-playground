@@ -37,12 +37,12 @@ filename = "AnythingV5_v5PrtRE.safetensors"
 [[models.checkpoints.items]]
 category = "sd15"
 tags = ["set-lite"]
-url = "https://civitai.com/api/download/models/128713?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+url = "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors"
 
 ### dreamshaper 8 lcm
 [[models.checkpoints.items]]
 category = "sd15"
-url = "https://civitai.com/api/download/models/252914?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+url = "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper8_LCM.safetensors"
 
 ### orangemix vae
 [[models.vae.items]]
@@ -123,7 +123,7 @@ url = "https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safeten
 [[models.checkpoints.items]]
 category = "sdxl"
 tags = ["set-lite"]
-url = "https://civitai.com/api/download/models/351306?type=Model&format=SafeTensor&size=full&fp=fp16"
+url = "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaperXL_Turbo_dpmppSdeKarras_half_pruned_6.safetensors"
 
 ### kohaku-xl
 [[models.checkpoints.items]]
@@ -153,7 +153,7 @@ url = "https://huggingface.co/dataautogpt3/OpenDalleV1.1/resolve/main/OpenDalleV
 ### neta_art_xl v1.0
 [[models.checkpoints.items]]
 category = "sdxl"
-url = "https://civitai.com/api/download/models/457853?type=Model&format=SafeTensor&size=full&fp=fp16"
+url = "https://huggingface.co/neta-art/neta-art-xl-1.0/resolve/main/neta_art_xl_v10.safetensors"
 
 
 ## sdxl loras
