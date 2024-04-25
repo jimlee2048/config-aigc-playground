@@ -182,6 +182,7 @@ tags = ["set-lite"]
 url = "https://civitai.com/api/download/models/247778?type=Model&format=SafeTensor"
 #### sampler: lcm; scheduler: sgm_uniform
 [[models.loras.items]]
+category = "sdxl"
 url = "https://civitai.com/api/download/models/268475?type=Model&format=SafeTensor"
 
 ### lightning loras
