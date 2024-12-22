@@ -2,3 +2,5 @@ workspace/
 .venv/
 venv/
 __pycache__/
+volume/
+*_data/

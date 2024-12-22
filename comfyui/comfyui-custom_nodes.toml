@@ -16,19 +16,35 @@
 # filename = "model.ckpt" ## optional, default: original filename
 # post_script = "init-model.sh" ## TODO
 
-
-
 [[custom_nodes]]
 url = "https://github.com/ltdrdata/ComfyUI-Manager"
 
 [[custom_nodes]]
-url = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes"
+url = "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
+
+[[custom_nodes]]
+url = "https://github.com/ltdrdata/ComfyUI-Inspire-Pack"
+
+[[custom_nodes]]
+url = "https://github.com/WASasquatch/was-node-suite-comfyui"
+
+[[custom_nodes]]
+url = "https://github.com/yolain/ComfyUI-Easy-Use"
+
+[[custom_nodes]]
+url = "https://github.com/chflame163/ComfyUI_LayerStyle"
+
+[[custom_nodes]]
+url = "https://github.com/chflame163/ComfyUI_LayerStyle_Advance"
 
 [[custom_nodes]]
 url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 
 [[custom_nodes]]
-url = "https://github.com/cubiq/ComfyUI_InstantID"
+url = "https://github.com/rgthree/rgthree-comfy"
+
+# [[custom_nodes]]
+# url = "https://github.com/cubiq/ComfyUI_InstantID"
 # TODO: 
 # - add pose_script to install insightface
 # - download antelopev2 model into $MODEL_DIR/insightface/models/antelopev2
@@ -45,9 +61,6 @@ url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_enco
 filename = "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors"
 
 [[custom_nodes]]
-url = "https://github.com/talesofai/comfyui-browser"
-
-[[custom_nodes]]
 url = "https://github.com/crystian/ComfyUI-Crystools"
 
 [[custom_nodes]]
@@ -57,34 +70,10 @@ url = "https://github.com/pythongosssss/ComfyUI-Custom-Scripts"
 url = "https://github.com/BennyKok/comfyui-deploy"
 
 [[custom_nodes]]
-url = "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
-
-[[custom_nodes]]
 url = "https://github.com/Acly/comfyui-inpaint-nodes"
 
 [[custom_nodes]]
-url = "https://github.com/huchenlei/ComfyUI-layerdiffuse"
-
-[[custom_nodes]]
 url = "https://github.com/pythongosssss/ComfyUI-WD14-Tagger"
-
-[[custom_nodes]]
-url = "https://github.com/11cafe/comfyui-workspace-manager"
-
-[[custom_nodes]]
-url = "https://github.com/jags111/efficiency-nodes-comfyui"
-
-[[custom_nodes]]
-url = "https://github.com/WASasquatch/was-node-suite-comfyui"
-
-[[custom_nodes]]
-url = "https://github.com/mcmonkeyprojects/sd-dynamic-thresholding"
-
-[[custom_nodes]]
-url = "https://github.com/rgthree/rgthree-comfy"
-
-[[custom_nodes]]
-url = "https://github.com/yolain/ComfyUI-Easy-Use"
 
 [[custom_nodes]]
 url = "https://github.com/Trung0246/ComfyUI-0246"
