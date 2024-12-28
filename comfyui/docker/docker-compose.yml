@@ -1,0 +1,17 @@
+services:
+  comfyui-jim-dev:
+    container_name: comfyui-jim-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8188:8188
+    security_opt:
+      - "label=type:nvidia_container_t"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
