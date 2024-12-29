@@ -6,6 +6,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8188:8188
+    volumes:
+      - ./volume/user:/workspace/ComfyUI/user
+      - ./volume/output:/workspace/ComfyUI/output
+      - ./volume/models:/workspace/ComfyUI/models
     security_opt:
       - "label=type:nvidia_container_t"
     deploy:
