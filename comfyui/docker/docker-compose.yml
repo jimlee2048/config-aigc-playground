@@ -1,6 +1,7 @@
 services:
   comfyui-jim-dev:
     container_name: comfyui-jim-dev
+    env_file: .env
     build:
       context: .
       dockerfile: Dockerfile

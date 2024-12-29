@@ -3,7 +3,7 @@ FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 ENV COMFYUI_PATH=${WORKDIR}/ComfyUI
-ENV COMFYUI_MN_PATH=${COMFYUI_MN_PATH}
+ENV COMFYUI_MN_PATH=${COMFYUI_PATH}/custom_nodes/ComfyUI-Manager
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -58,5 +58,5 @@ ENV PATH="${PATH}:/root/.local/bin"
 # Suppress [WARNING: Running pip as the 'root' user]
 ENV PIP_ROOT_USER_ACTION=ignore
 
-ENTRYPOINT ["comfy", "launch", "--", "--listen", "0.0.0.0,::", "--port", "8188"]
-# CMD [ "python", "boot.py" ]
+COPY boot.py .
+CMD [ "python", "boot.py" ]

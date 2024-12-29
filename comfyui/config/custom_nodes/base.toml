@@ -1,20 +1,7 @@
 # # example
 # [[custom_nodes]]
 # url = ""
-# post_script = "init-custom_node.sh" ## TODO
-
-# # example
-# # about download_dir:
-# # - default: $MODEL_DIR/type/category
-# # - priority: model.items.dir > model.dir > default
-# [models.type]
-# dir = "" ## optional, -> $MODEL_DIR/{model.dir}
-# [[models.type.items]]
-# category = "" ## optional, sd15, sdxl, etc. will use as a directory name. default: None
-# dir = ""  ## optional, -> $MODEL_DIR/{model.items.dir}
-# url = "https://example.com/model.ckpt"
-# filename = "model.ckpt" ## optional, default: original filename
-# post_script = "init-model.sh" ## TODO
+# post_script = "" ## todo
 
 [[custom_nodes]]
 url = "https://github.com/ltdrdata/ComfyUI-Manager"
@@ -41,13 +28,10 @@ url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 url = "https://github.com/rgthree/rgthree-comfy"
 
 [[custom_nodes]]
+url = "https://github.com/kijai/ComfyUI-KJNodes"
+
+[[custom_nodes]]
 url = "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
-[[models.clip_vision.items]]
-url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors"
-filename = "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors"
-[[models.clip_vision.items]]
-url = "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/image_encoder/model.safetensors"
-filename = "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors"
 
 [[custom_nodes]]
 url = "https://github.com/crystian/ComfyUI-Crystools"
@@ -56,13 +40,13 @@ url = "https://github.com/crystian/ComfyUI-Crystools"
 url = "https://github.com/pythongosssss/ComfyUI-Custom-Scripts"
 
 [[custom_nodes]]
-url = "https://github.com/BennyKok/comfyui-deploy"
+url = "https://github.com/pythongosssss/ComfyUI-WD14-Tagger"
 
 [[custom_nodes]]
 url = "https://github.com/Acly/comfyui-inpaint-nodes"
 
 [[custom_nodes]]
-url = "https://github.com/pythongosssss/ComfyUI-WD14-Tagger"
-
-[[custom_nodes]]
 url = "https://github.com/Trung0246/ComfyUI-0246"
+
+# [[custom_nodes]]
+# url = "https://github.com/BennyKok/comfyui-deploy"
