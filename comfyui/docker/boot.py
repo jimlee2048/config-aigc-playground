@@ -62,8 +62,8 @@ def init_nodes(boot_config: dict):
             continue
         
         node_path = COMFYUI_PATH / "custom_nodes" / node_name
-        if node_path.exists and node_path.is_dir():
-            if is_valid_git_repo(node_path):
+        if node_path.exists():
+            if node_path.is_dir() and is_valid_git_repo(node_path):
                 print(f"[{current_count}/{all_count}] {node_name} already exists, skip...")
                 continue
             else:
@@ -113,12 +113,13 @@ def init_models(boot_config: dict):
             print(f"[{current_count}/{all_count}] Invalid model config: {model}\n{str(e)}")
             continue
         model_path = COMFYUI_PATH / model_dir / model_filename
-        if model_path.exists and model_path.is_file():
-            print(f"[{current_count}/{all_count}] {model_filename} already exists, skip...")
-            continue
-        else:
-            print(f"[{current_count}/{all_count}] {model_filename} broken, removing...")
-            shutil.rmtree(model_path)
+        if model_path.exists:
+            if model_path.is_file():
+                print(f"[{current_count}/{all_count}] {model_filename} already exists, skip...")
+                continue
+            else:
+                print(f"[{current_count}/{all_count}] {model_filename} broken, removing...")
+                shutil.rmtree(model_path)
         print(f"[{current_count}/{all_count}] Downloading model: {model_filename}")
         try:
             cli_cmd_model.download(url=model_url, relative_path=model_dir, filename=model_filename)
