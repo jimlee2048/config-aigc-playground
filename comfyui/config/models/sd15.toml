@@ -1,0 +1,4 @@
+[[models]]
+url = "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors"
+dir = "models/checkpoints/sd15"
+filename = "DreamShaper_8_pruned.safetensors"

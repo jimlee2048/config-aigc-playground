@@ -25,6 +25,9 @@ url = "https://github.com/chflame163/ComfyUI_LayerStyle_Advance"
 url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 
 [[custom_nodes]]
+url = "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet"
+
+[[custom_nodes]]
 url = "https://github.com/rgthree/rgthree-comfy"
 
 [[custom_nodes]]
@@ -47,6 +50,9 @@ url = "https://github.com/Acly/comfyui-inpaint-nodes"
 
 [[custom_nodes]]
 url = "https://github.com/Trung0246/ComfyUI-0246"
+
+[[custom_nodes]]
+url = "https://github.com/filliptm/ComfyUI_Fill-Nodes"
 
 # [[custom_nodes]]
 # url = "https://github.com/BennyKok/comfyui-deploy"
