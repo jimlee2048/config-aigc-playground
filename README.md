@@ -1,4 +1,4 @@
-# config-aigc
+# config-aigc-playground
 
 ## debug cheatsheet
 ```bash
