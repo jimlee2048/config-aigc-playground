@@ -32,6 +32,12 @@ RUN git -C ${COMFYUI_PATH} checkout ${COMFYUI_VERSION}
 ARG COMFYUI_MN_VERSION="main"
 RUN git -C ${COMFYUI_MN_PATH} checkout ${COMFYUI_MN_VERSION}
 
+# pip config
+# let .pyc files be stored in one place
+ENV PYTHONPYCACHEPREFIX="/root/.cache/pycache"
+# suppress [WARNING: Running pip as the 'root' user]
+ENV PIP_ROOT_USER_ACTION=ignore
+
 # install comfyui basic requirements
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install \
@@ -41,22 +47,19 @@ RUN --mount=type=cache,target=/root/.cache/pip \
         --index-url https://download.pytorch.org/whl/cu124 \
         --extra-index-url https://pypi.org/simple
 
-# instanll comfy-cli
+# install comfy-cli
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install comfy-cli \
+    pip install comfy-cli wget giturlparse\
     && comfy --skip-prompt tracking disable \
-    && comfy set-default ${COMFYUI_PATH}
-
-EXPOSE 8188
-
-# Let .pyc files be stored in one place
-ENV PYTHONPYCACHEPREFIX="/root/.cache/pycache"
-# Let PIP install packages to /root/.local
-ENV PIP_USER=true
-# Add above to PATH
-ENV PATH="${PATH}:/root/.local/bin"
-# Suppress [WARNING: Running pip as the 'root' user]
-ENV PIP_ROOT_USER_ACTION=ignore
+    && comfy set-default ${COMFYUI_PATH} \
+    && comfy node save-snapshot
 
 COPY boot.py .
+ENV BOOT_CN_NETWORK=false
+ENV BOOT_CONFIG_DIR=${WORKDIR}/boot_config
+ENV BOOT_INIT_NODE=false
+ENV BOOT_INIT_MODEL=false
+
+ENV DEBUG=false
+EXPOSE 8188
 CMD [ "python", "boot.py" ]

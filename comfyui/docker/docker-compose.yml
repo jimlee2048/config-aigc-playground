@@ -1,7 +1,7 @@
 services:
   comfyui-jim-dev:
     container_name: comfyui-jim-dev
-    env_file: .env
+    env_file: example.env
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +11,7 @@ services:
       - ./volume/user:/workspace/ComfyUI/user
       - ./volume/output:/workspace/ComfyUI/output
       - ./volume/models:/workspace/ComfyUI/models
+      - ../config:/workspace/boot_config
     security_opt:
       - "label=type:nvidia_container_t"
     deploy:
