@@ -134,7 +134,7 @@ def process_model(model):
         model_dir = model['dir']
         model_filename = model['filename']
         
-        boot_progress.advance(msg=f"Downloading model: {model_filename}")
+        boot_progress.advance(msg=f"Processing model: {model_filename}")
         
         model_path = COMFYUI_PATH / model_dir / model_filename
         if model_path.exists():
@@ -151,11 +151,11 @@ def process_model(model):
             if 'civitai.com' in model_url:
                 model_url = model_url.replace('https://civitai.com', 'https://civitai.work')
                 
-        console.print(f"⬇️ Downloading [blue]{model_filename}[/blue]...")
+        console.print(f"⬇️ Downloading [blue]{model_filename}[/blue] -> [blue]{model_dir}[/blue]")
         download_model(model_url, model_dir, model_filename)
             
     except Exception as e:
-        console.print(f"❌ Error downloading [red]{model_filename}[/red]:\n{str(e)}", style="red")
+        console.print(f"❌ Error processing model [red]{model_filename}[/red]:\n{str(e)}", style="red")
 
 def init_nodes(boot_config: dict):
     node_config = boot_config.get('custom_nodes', [])

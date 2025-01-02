@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-        ca-certificates git cmake ninja-build wget curl aria2 ffmpeg libegl1-mesa \
+        ca-certificates git cmake ninja-build wget curl aria2 ffmpeg mesa-utils \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
