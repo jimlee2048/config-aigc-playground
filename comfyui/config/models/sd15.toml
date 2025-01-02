@@ -2,3 +2,8 @@
 url = "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors"
 dir = "models/checkpoints/sd15"
 filename = "DreamShaper_8_pruned.safetensors"
+
+[[models]]
+url = "https://civitai.com/api/download/models/30163?type=Model&format=SafeTensor&size=full&fp=fp16"
+dir = "models/checkpoints/sd15"
+filename = "AnythingV5_v5PrtRE.safetensors"

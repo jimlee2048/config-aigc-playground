@@ -2,15 +2,12 @@ import os
 import subprocess
 import shutil
 from pathlib import Path
-import tomlkit
+import tomllib
 import git
 import giturlparse
-from comfy_cli.workspace_manager import WorkspaceManager
 from comfy_cli.config_manager import ConfigManager
 import comfy_cli.constants as cli_constants
-import comfy_cli.cmdline as cli_cmd
-import comfy_cli.command.custom_nodes.command as cli_cmd_node 
-import comfy_cli.command.models.models as cli_cmd_model
+from rich.console import Console
 
 DEBUG = os.environ.get('DEBUG', False)
 HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
@@ -22,21 +19,78 @@ BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
 BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
 COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
 
+console = Console()
+
+
+class BootProgress:
+    def __init__(self):
+        self.total_steps = 0
+        self.current_step = 0
+
+    def start(self, total_steps: int):
+        self.total_steps = total_steps
+        self.current_step = 0
+
+    def advance(self, msg: str = None):
+        self.current_step += 1
+        if msg:
+            self.print_progress(msg)
+
+    def print_progress(self, msg: str = None):
+        overall_progress = f"[{self.current_step}/{self.total_steps}]"
+        if msg:
+            console.print(f"[yellow]{overall_progress}[/yellow]: {msg}")
+
+boot_progress = BootProgress()
+
 def load_boot_config(path: str) -> dict:
     config_path = Path(path)
     if not config_path.is_dir():
-        print(f"Invalid config path: {path}")
+        console.print(f"Invalid config path: {path}", style="yellow")
         if config_path.is_file():
             config_path.unlink()
         config_path.mkdir(parents=True, exist_ok=True)
         return {}
     
     config_files = list(config_path.rglob("*.toml"))
-    print(f"Found {len(config_files)} config files in {path}:\n{config_files}")
+    console.print(f"Found {len(config_files)} config files in {path}:")
+    for file in config_files:
+        console.print(f"  📄 {file}", style="cyan")
     
     boot_config = {}
-    for file in config_files:
-        boot_config.update(tomlkit.loads(file.read_text()))
+    try:
+        for file in config_files:
+            boot_config.update(tomllib.loads(file.read_text()))
+
+        # ignore duplicate models in config
+        if 'models' in boot_config:
+            unique_keys = set()
+            unique_models = [
+                model for model in boot_config['models']
+                if (model['filename'], model['url'], model['dir']) not in unique_keys 
+                and not unique_keys.add((model['filename'], model['url'], model['dir']))
+            ]
+            duplicates_count = len(boot_config['models']) - len(unique_models)
+            boot_config['models'] = unique_models
+            if duplicates_count:
+                console.print("⚠️ Ignoring duplicate models in boot config", style="yellow")
+
+        # ignore duplicate nodes in config
+        if 'custom_nodes' in boot_config:
+            unique_keys = set()
+            unique_nodes = [
+                node for node in boot_config['custom_nodes']
+                if (node['url']) not in unique_keys 
+                and not unique_keys.add((node['url']))
+            ]
+            duplicates_count = len(boot_config['custom_nodes']) - len(unique_nodes)
+            boot_config['custom_nodes'] = unique_nodes
+            if duplicates_count:
+                console.print(f"[yellow]Ignoring {duplicates_count} duplicate nodes in boot config[/yellow]")
+
+    except Exception as e:
+        console.print(f"Error loading boot config:\n{str(e)}", style="red")
+        exit(1)
     return boot_config
 
 def is_valid_git_repo(path: str) -> bool:        
@@ -46,106 +100,128 @@ def is_valid_git_repo(path: str) -> bool:
     except Exception as e:
         return False
 
-def init_nodes(boot_config: dict):
-    node_config = boot_config.get('custom_nodes', {})
-    all_count = len(node_config)
-    print(f"Found {all_count} custom nodes in boot config")
-    
-    for current_count, node in enumerate(node_config, 1):
-        try:
-            node_url = node['url']
-            node_name = giturlparse.parse(node_url).name
-            if not giturlparse.parse(node_url).valid:
-                raise Exception(f"Invalid git URL")
-        except Exception as e:
-            print(f"[{current_count}/{all_count}] Invalid node config: {node}\n{str(e)}")
-            continue
+def process_node(node):
+    try:
+        node_url = node['url']
+        node_name = giturlparse.parse(node_url).name
+        if not giturlparse.parse(node_url).valid:
+            raise Exception("Invalid git URL")
+        
+        boot_progress.advance(msg=f"Processing node: {node_name}")
         
         node_path = COMFYUI_PATH / "custom_nodes" / node_name
         if node_path.exists():
             if node_path.is_dir() and is_valid_git_repo(node_path):
-                print(f"[{current_count}/{all_count}] {node_name} already exists, skip...")
-                continue
+                console.print(f"ℹ️ [cyan]{node_name}[/cyan] already exists, skipping...")
+                return
             else:
-                print(f"[{current_count}/{all_count}] {node_name} broken, removing...")
+                console.print(f"⚠️ [yellow]{node_name}[/yellow] is corrupted, removing...")
                 shutil.rmtree(node_path)
 
-        print(f"[{current_count}/{all_count}] Installing custom node: {node_name}")
-        try:
-            cli_cmd_node.install(nodes=[node_url], mode="remote")
-        except Exception as e:
-            print(f"Error installing {node_name}:\n{str(e)}")
-            continue
+        console.print(f"🔧 Installing [blue]{node_name}[/blue]...")
+        subprocess.run(["comfy", "node", "install", node_url, "--channel", "remote"], check=True)
 
         node_script = node.get('script', '')
         if node_script:
             exec_script(node_script)
+            
+    except Exception as e:
+        console.print(f"❌ Error processing [red]{node_name}[/red]:\n{str(e)}", style="red")
+
+def process_model(model):
+    try:
+        model_url = model['url']
+        model_dir = model['dir']
+        model_filename = model['filename']
+        
+        boot_progress.advance(msg=f"Downloading model: {model_filename}")
+        
+        model_path = COMFYUI_PATH / model_dir / model_filename
+        if model_path.exists():
+            if model_path.is_file():
+                console.print(f"ℹ️ [cyan]{model_filename}[/cyan] already exists, skipping...")
+                return
+            else:
+                console.print(f"⚠️ [yellow]{model_filename}[/yellow] is corrupted, removing...")
+                shutil.rmtree(model_path)
+
+        if BOOT_CN_NETWORK:
+            if 'huggingface.co' in model_url:
+                model_url = model_url.replace('https://huggingface.co', os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'))
+            if 'civitai.com' in model_url:
+                model_url = model_url.replace('https://civitai.com', 'https://civitai.work')
+                
+        console.print(f"⬇️ Downloading [blue]{model_filename}[/blue]...")
+        download_model(model_url, model_dir, model_filename)
+            
+    except Exception as e:
+        console.print(f"❌ Error downloading [red]{model_filename}[/red]:\n{str(e)}", style="red")
+
+def init_nodes(boot_config: dict):
+    node_config = boot_config.get('custom_nodes', [])
+    all_count = len(node_config)
+    console.print(f"Found {all_count} custom nodes in boot config", style="blue")
+    
+    if all_count > 0:
+        boot_progress.start(all_count)
+        for node in node_config:
+            process_node(node)
+    return all_count
+
+def init_models(boot_config: dict):
+    model_config = boot_config.get('models', [])
+    all_count = len(model_config)
+    console.print(f"Found {all_count} models in boot config", style="blue")
+    
+    if all_count > 0:
+        boot_progress.start(all_count)
+        for model in model_config:
+            process_model(model)
+    return all_count
 
 def exec_script(path: str) -> bool:
     script = Path(path)
     if not script.is_file():
-        print(f"Invalid script path: {path}")
+        console.print(f"⚠️ Invalid script path: [yellow]{path}[/yellow]", style="yellow")
         return False
         
     try:
-        print(f"Executing script: {path}")
+        console.print(f"🛠️ Executing script: [blue]{path}[/blue]...")
         result = subprocess.run(str(script), shell=True, capture_output=True, text=True)
         if result.returncode != 0:
-            print(f"Error running script '{path}':\n{result.stderr}")
+            console.print(f"❌ Error running script '[red]{path}[/red]':\n{result.stderr}", style="red")
             return False
-        print(f"Successfully executed: {path}")
+        console.print(f"✅ Successfully executed: [green]{path}[/green]")
         return True
     except Exception as e:
-        print(f"Exception while running script '{path}': {str(e)}")
+        console.print(f"❌ Exception while running script '[red]{path}[/red]': {str(e)}", style="red")
         return False
 
-def init_models(boot_config: dict):
-    model_config = boot_config.get('models', {})
-    all_count = len(model_config)
-    print(f"Found {all_count} models in boot config")
-    
-    for current_count, model in enumerate(model_config, 1):
-        try:
-            model_url = model['url']
-            model_dir = model['dir']
-            model_filename = model['filename']
-        except Exception as e:
-            print(f"[{current_count}/{all_count}] Invalid model config: {model}\n{str(e)}")
-            continue
-        model_path = COMFYUI_PATH / model_dir / model_filename
-        if model_path.exists:
-            if model_path.is_file():
-                print(f"[{current_count}/{all_count}] {model_filename} already exists, skip...")
-                continue
-            else:
-                print(f"[{current_count}/{all_count}] {model_filename} broken, removing...")
-                shutil.rmtree(model_path)
-        print(f"[{current_count}/{all_count}] Downloading model: {model_filename}")
-        try:
-            cli_cmd_model.download(url=model_url, relative_path=model_dir, filename=model_filename)
-        except Exception as e:
-            print(f"Error downloading {model_filename}:\n{str(e)}")
-            continue
+def download_model(url: str, dir: str, filename: str) -> bool:
+    try:
+        subprocess.run(["comfy", "model", "download", "--url", url, "--relative-path", dir, "--filename", filename], check=True)
+    except Exception as e:
+        console.print(f"Error downloading model {filename}:\n{str(e)}", style="red")
+        return False
+    return True
 
 if __name__ == '__main__':
     # check if comfyui path exists
     if not COMFYUI_PATH.is_dir():
-        raise Exception(f"ERROR: Invalid ComfyUI path \"{COMFYUI_PATH}\"")
+        console.print(f"ERROR: Invalid ComfyUI path \"{COMFYUI_PATH}\"", style="red")
+        raise Exception("Invalid ComfyUI path")
 
     # chinese mainland network settings
     if BOOT_CN_NETWORK:
-        print("Optimizing for Chinese Mainland network...")
+        console.print("🌐 Optimizing for Chinese Mainland network...", style="blue")
         # pip source to ustc mirror
         os.environ['PIP_INDEX_URL'] = 'https://mirrors.ustc.edu.cn/pypi/web/simple'
         # huggingface endpoint to hf-mirror.com
         os.environ['HF_ENDPOINT'] = "https://hf-mirror.com"
-        # TODO: civitai, git, apt, etc.
+        if HF_API_TOKEN:
+            console.print("⚠️ Your [yellow]HF_API_TOKEN[/yellow] will be sent to a third-party server 'https://hf-mirror.com' when downloading authorized models", style="yellow")
 
-    ## necessary setup for comfy_cli
     cli_config_manager = ConfigManager()
-    cli_workspace_manager = WorkspaceManager()
-    cli_workspace_manager.setup_workspace_manager(specified_workspace=None, use_here=False, use_recent=False, skip_prompting=True)
-
     if HF_API_TOKEN:
         cli_config_manager.set(cli_constants.HF_API_TOKEN_KEY, HF_API_TOKEN)
     if CIVITAI_API_TOKEN:
@@ -153,16 +229,24 @@ if __name__ == '__main__':
 
     boot_config = load_boot_config(BOOT_CONFIG_DIR)
     if not boot_config:
-        print("No boot config found, continue with default settings...")
+        console.print("🔍 No boot config found, continuing with default settings...", style="blue")
     else:
+        total_steps = 0
+        if BOOT_INIT_NODE:
+            total_steps += len(boot_config.get('custom_nodes', []))
+        if BOOT_INIT_MODEL:
+            total_steps += len(boot_config.get('models', []))
+            
+        boot_progress.start(total_steps)
         if BOOT_INIT_NODE:
             init_nodes(boot_config)
         if BOOT_INIT_MODEL:
             init_models(boot_config)
 
+
     launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
     launch_args_str = " ".join(launch_args_list).strip()
     cli_config_manager.set(cli_constants.CONFIG_KEY_DEFAULT_LAUNCH_EXTRAS, launch_args_str)
-    
-    cli_cmd.env()
-    cli_cmd.launch(background=False, extra=launch_args_list)
+    subprocess.run(["comfy", "env"], check=True)
+    console.print("✅ Initialization completed, now launching ComfyUI...", style="green")
+    subprocess.run(["comfy", "launch", "--"] + launch_args_list, check=True)
