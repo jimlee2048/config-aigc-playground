@@ -119,7 +119,7 @@ def process_node(node):
                 shutil.rmtree(node_path)
 
         console.print(f"🔧 Installing [blue]{node_name}[/blue]...")
-        subprocess.run(["comfy", "node", "install", node_url, "--channel", "remote"], check=True)
+        subprocess.run(["comfy", "node", "install", node_url], check=True)
 
         node_script = node.get('script', '')
         if node_script:
