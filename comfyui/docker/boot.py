@@ -251,6 +251,7 @@ if __name__ == '__main__':
         os.environ['HF_ENDPOINT'] = "https://hf-mirror.com"
         if HF_API_TOKEN:
             console.print("⚠️ Your [yellow]HF_API_TOKEN[/yellow] will be sent to a third-party server 'https://hf-mirror.com' when downloading authorized models", style="yellow")
+        # TODO: git 
 
     cli_config_manager = ConfigManager()
     if HF_API_TOKEN:
@@ -274,10 +275,9 @@ if __name__ == '__main__':
         if BOOT_INIT_MODEL:
             init_models(boot_config)
 
-
     launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
     launch_args_str = " ".join(launch_args_list).strip()
     cli_config_manager.set(cli_constants.CONFIG_KEY_DEFAULT_LAUNCH_EXTRAS, launch_args_str)
-    subprocess.run(["comfy", "env"], check=True)
     console.print("✅ Initialization completed, now launching ComfyUI...", style="green")
+    subprocess.run(["comfy", "env"], check=True)
     subprocess.run(["comfy", "launch", "--"] + launch_args_list, check=True)
