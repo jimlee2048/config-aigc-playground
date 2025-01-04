@@ -66,6 +66,9 @@ url = "https://github.com/Trung0246/ComfyUI-0246"
 url = "https://github.com/filliptm/ComfyUI_Fill-Nodes"
 
 [[custom_nodes]]
+url = "https://github.com/MaraScott/ComfyUI_MaraScott_Nodes"
+
+[[custom_nodes]]
 url = "https://github.com/city96/ComfyUI-GGUF"
 
 # [[custom_nodes]]
