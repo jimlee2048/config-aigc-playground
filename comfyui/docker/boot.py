@@ -1,6 +1,7 @@
 import os
 import subprocess
 import shutil
+import re
 from pathlib import Path
 import tomllib
 import git
@@ -15,6 +16,7 @@ CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
 COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
 BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
 BOOT_CONFIG_DIR = os.environ.get('BOOT_CONFIG_DIR', None)
+BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
 BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
 BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
 COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
@@ -52,10 +54,25 @@ def load_boot_config(path: str) -> dict:
         config_path.mkdir(parents=True, exist_ok=True)
         return {}
     
-    config_files = list(config_path.rglob("*.toml"))
-    console.print(f"Found {len(config_files)} config files in {path}:")
+    all_config_files = list(config_path.rglob("*.toml"))
+    if BOOT_CONFIG_INCLUDE:
+        try:
+            filter_pattern = re.compile(BOOT_CONFIG_INCLUDE)
+        except re.error as e:
+            console.print(f"Invalid regex pattern '{BOOT_CONFIG_INCLUDE}': {str(e)}", style="red")
+            return {}
+        
+        config_files = [f for f in all_config_files if filter_pattern.search(f.name)]
+
+        if len(config_files) < len(all_config_files):
+            console.print(f"Filtered {len(all_config_files) - len(config_files)} config files using pattern: {BOOT_CONFIG_INCLUDE}", style="yellow")
+
+    else:
+        config_files = all_config_files
+    
+    console.print(f"Using {len(config_files)} config files in {path}:", style="blue")
     for file in config_files:
-        console.print(f"  📄 {file}", style="cyan")
+        console.print(f"  📄 {file}", style="blue")
     
     boot_config = {}
     try:
@@ -160,9 +177,9 @@ def process_model(model):
 def init_nodes(boot_config: dict):
     node_config = boot_config.get('custom_nodes', [])
     all_count = len(node_config)
-    console.print(f"Found {all_count} custom nodes in boot config", style="blue")
-    
     if all_count > 0:
+        console.print(f"Installing {all_count} custom nodes in boot config:", style="blue")
+        console.print("\n".join([f"  📦 {node['url']}" for node in node_config]), style="blue")
         boot_progress.start(all_count)
         for node in node_config:
             process_node(node)
@@ -171,9 +188,10 @@ def init_nodes(boot_config: dict):
 def init_models(boot_config: dict):
     model_config = boot_config.get('models', [])
     all_count = len(model_config)
-    console.print(f"Found {all_count} models in boot config", style="blue")
     
     if all_count > 0:
+        console.print(f"Downloading {all_count} models in boot config:", style="blue")
+        console.print("\n".join([f"  📦 {model['filename']}" for model in model_config]), style="blue")
         boot_progress.start(all_count)
         for model in model_config:
             process_model(model)
