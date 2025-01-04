@@ -1,7 +1,7 @@
 # # example
 # [[custom_nodes]]
 # url = ""
-# post_script = "" ## todo
+# post_script = ""
 
 [[custom_nodes]]
 url = "https://github.com/ltdrdata/ComfyUI-Manager"
