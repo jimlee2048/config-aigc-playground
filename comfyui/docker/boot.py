@@ -17,6 +17,7 @@ COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
 BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
 BOOT_CONFIG_DIR = os.environ.get('BOOT_CONFIG_DIR', None)
 BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
+BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
 BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
 BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
 COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
@@ -45,7 +46,19 @@ class BootProgress:
 
 boot_progress = BootProgress()
 
+def compile_pattern(pattern_str: str) -> re.Pattern:
+    if not pattern_str:
+        return None
+    try:
+        return re.compile(pattern_str)
+    except re.error as e:
+        console.print(f"Invalid regex pattern '{pattern_str}': {str(e)}", style="red")
+        return None
+
 def load_boot_config(path: str) -> dict:
+
+    console.print(f"🔍 Loading boot config from {path}...", style="blue")
+
     config_path = Path(path)
     if not config_path.is_dir():
         console.print(f"Invalid config path: {path}", style="yellow")
@@ -54,22 +67,22 @@ def load_boot_config(path: str) -> dict:
         config_path.mkdir(parents=True, exist_ok=True)
         return {}
     
-    all_config_files = list(config_path.rglob("*.toml"))
-    if BOOT_CONFIG_INCLUDE:
-        try:
-            filter_pattern = re.compile(BOOT_CONFIG_INCLUDE)
-        except re.error as e:
-            console.print(f"Invalid regex pattern '{BOOT_CONFIG_INCLUDE}': {str(e)}", style="red")
-            return {}
-        
-        config_files = [f for f in all_config_files if filter_pattern.search(f.name)]
-
-        if len(config_files) < len(all_config_files):
-            console.print(f"Filtered {len(all_config_files) - len(config_files)} config files using pattern: {BOOT_CONFIG_INCLUDE}", style="yellow")
-
-    else:
-        config_files = all_config_files
+    config_files = list(config_path.rglob("*.toml"))
     
+    if BOOT_CONFIG_INCLUDE or BOOT_CONFIG_EXCLUDE:
+        include_pattern = compile_pattern(BOOT_CONFIG_INCLUDE)
+        exclude_pattern = compile_pattern(BOOT_CONFIG_EXCLUDE)
+        filtered_files = [
+            f for f in config_files
+            if (not include_pattern or include_pattern.search(f.name)) and
+               (not exclude_pattern or not exclude_pattern.search(f.name))
+        ]
+        if include_pattern:
+            console.print(f"Include filter enabled: {BOOT_CONFIG_INCLUDE}", style="yellow")
+        if exclude_pattern:
+            console.print(f"Exclude filter enabled: {BOOT_CONFIG_EXCLUDE}", style="yellow")
+        config_files = filtered_files
+
     console.print(f"Using {len(config_files)} config files in {path}:", style="blue")
     for file in config_files:
         console.print(f"  📄 {file}", style="blue")
@@ -124,7 +137,7 @@ def process_node(node):
         if not giturlparse.parse(node_url).valid:
             raise Exception("Invalid git URL")
         
-        boot_progress.advance(msg=f"Processing node: {node_name}")
+        boot_progress.advance(msg=f"Processing custom nodes: {node_name}")
         
         node_path = COMFYUI_PATH / "custom_nodes" / node_name
         if node_path.exists():
@@ -135,7 +148,7 @@ def process_node(node):
                 console.print(f"⚠️ [yellow]{node_name}[/yellow] is corrupted, removing...")
                 shutil.rmtree(node_path)
 
-        console.print(f"🔧 Installing [blue]{node_name}[/blue]...")
+        console.print(f"🔧 Installing custom nodes [blue]{node_name}[/blue]...")
         subprocess.run(["comfy", "node", "install", node_url], check=True)
 
         node_script = node.get('script', '')
@@ -168,7 +181,7 @@ def process_model(model):
             if 'civitai.com' in model_url:
                 model_url = model_url.replace('https://civitai.com', 'https://civitai.work')
                 
-        console.print(f"⬇️ Downloading [blue]{model_filename}[/blue] -> [blue]{model_dir}[/blue]")
+        console.print(f"⬇️ Downloading model [blue]{model_filename}[/blue] -> [blue]{model_dir}[/blue]")
         download_model(model_url, model_dir, model_filename)
             
     except Exception as e:
