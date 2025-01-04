@@ -1,11 +1,11 @@
 # fp8_e4m3fn
 # aio, all 2 text encoders baked in
 [[models]]
-url = "https://huggingface.co/Comfy-Org/stable-diffusion-3.5-fp8/blob/main/sd3.5_large_fp8_scaled.safetensors"
+url = "https://huggingface.co/Comfy-Org/stable-diffusion-3.5-fp8/resolve/main/sd3.5_large_fp8_scaled.safetensors"
 dir = "models/checkpoints/sd35"
 filename = "sd3.5_large_fp8_scaled.safetensors"
 
 # [[models]]
-# url = "https://huggingface.co/Comfy-Org/stable-diffusion-3.5-fp8/blob/main/sd3.5_medium_incl_clips_t5xxlfp8scaled.safetensors"
+# url = "https://huggingface.co/Comfy-Org/stable-diffusion-3.5-fp8/resolve/main/sd3.5_medium_incl_clips_t5xxlfp8scaled.safetensors"
 # dir = "models/checkpoints/sd35"
 # filename = "sd3.5_medium_incl_clips_t5xxlfp8scaled.safetensors"

@@ -1,17 +1,17 @@
 # anime fix hands lora by @bdsqlsz, for animagine-xl-3.1 
 [[models]]
-url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-final/blob/main/Lora/Fixhands_anime_bdsqlsz_V2.safetensors"
+url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-final/resolve/main/Lora/Fixhands_anime_bdsqlsz_V2.safetensors"
 dir = "models/loras/sdxl"
 filename = "Fixhands_anime_bdsqlsz_V2.safetensors"
 
 # anime nsfw filter lora by @bdsqlsz, for animagine-xl-3.1 
 [[models]]
-url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-final/blob/main/Lora/filter_nude3.safetensors"
+url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-final/resolve/main/Lora/filter_nude3.safetensors"
 dir = "models/loras/sdxl"
 filename = "filter_nude3.safetensors"
 
 # anime low saturation lora by @bdsqlsz, for animagine-xl-3.1
 [[models]]
-url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-final/blob/main/Lora/low_saturation_B-lora.safetensors"
+url = "https://huggingface.co/bdsqlsz/stable-diffusion-xl-anime-final/resolve/main/Lora/low_saturation_B-lora.safetensors"
 dir = "models/loras/sdxl"
 filename = "low_saturation_B-lora.safetensors"

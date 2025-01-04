@@ -1,69 +1,69 @@
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_inpaint/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_inpaint/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_inpaint.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11f1e_sd15_tile/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11f1e_sd15_tile/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11f1e_sd15_tile.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_openpose/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_openpose/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_openpose.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11f1p_sd15_depth/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11f1p_sd15_depth/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11f1p_sd15_depth.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_canny/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_canny/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_canny.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_softedge/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_softedge/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_softedge.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_scribble/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_scribble/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_scribble.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_lineart/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_lineart/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_lineart.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15s2_lineart_anime/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15s2_lineart_anime/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15s2_lineart_anime.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_mlsd/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_mlsd/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_mlsd.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_normalbae/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_normalbae/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_normalbae.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11p_sd15_seg/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11p_sd15_seg/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11p_sd15_seg.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11e_sd15_shuffle/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11e_sd15_shuffle/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11e_sd15_shuffle.safetensors"
 
 [[models]]
-url = "https://huggingface.co/lllyasviel/control_v11e_sd15_ip2p/blob/main/diffusion_pytorch_model.safetensors"
+url = "https://huggingface.co/lllyasviel/control_v11e_sd15_ip2p/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/sd15"
 filename = "control_v11e_sd15_ip2p.safetensors"

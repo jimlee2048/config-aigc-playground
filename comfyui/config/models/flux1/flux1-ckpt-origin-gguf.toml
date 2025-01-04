@@ -1,9 +1,9 @@
 [[models]]
-url = "https://huggingface.co/city96/FLUX.1-dev-gguf/blob/main/flux1-dev-Q6_K.gguf"
+url = "https://huggingface.co/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q6_K.gguf"
 dir = "models/diffusion_models/flux1"
 filename = "flux1-dev-Q6_K.gguf"
 
 # [[models]]
-# url = "https://huggingface.co/city96/FLUX.1-dev-gguf/blob/main/flux1-dev-Q8_0.gguf"
+# url = "https://huggingface.co/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q8_0.gguf"
 # dir = "models/diffusion_models/flux1"
 # filename = "flux1-dev-Q8_0.gguf"

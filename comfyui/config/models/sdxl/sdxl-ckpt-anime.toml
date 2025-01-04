@@ -17,19 +17,19 @@ filename = "animagine-xl-3.1.safetensors"
 
 # Kohaku XL Zeta
 [[models]]
-url = "https://huggingface.co/KBlueLeaf/Kohaku-XL-Zeta/blob/main/kohaku-xl-zeta.safetensors"
+url = "https://huggingface.co/KBlueLeaf/Kohaku-XL-Zeta/resolve/main/kohaku-xl-zeta.safetensors"
 dir = "models/checkpoints/sdxl"
 filename = "kohaku-xl-zeta.safetensors"
 
 # NoobAI XL 1.1
 [[models]]
-url = "https://huggingface.co/Laxhar/noobai-XL-1.1/blob/main/NoobAI-XL-v1.1.safetensors"
+url = "https://huggingface.co/Laxhar/noobai-XL-1.1/resolve/main/NoobAI-XL-v1.1.safetensors"
 dir = "models/checkpoints/sdxl"
 filename = "noobai-XL-1.1.safetensors"
 
 # NoobAI XL Vpred 1.0
 [[models]]
-url = "https://huggingface.co/Laxhar/noobai-XL-Vpred-1.0/blob/main/NoobAI-XL-Vpred-v1.0.safetensors"
+url = "https://huggingface.co/Laxhar/noobai-XL-Vpred-1.0/resolve/main/NoobAI-XL-Vpred-v1.0.safetensors"
 dir = "models/checkpoints/sdxl"
 filename = "noobai-XL-Vpred-1.0.safetensors"
 

@@ -46,12 +46,12 @@ dir = "models/lora/sdxl"
 filename = "Hyper-SDXL-8steps-lora.safetensors"
 
 [[models]]
-url = "https://huggingface.co/ByteDance/Hyper-SD/blob/main/Hyper-SDXL-8steps-CFG-lora.safetensors"
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-8steps-CFG-lora.safetensors"
 dir = "models/lora/sdxl"
 filename = "Hyper-SDXL-8steps-CFG-lora.safetensors"
 
 
 [[models]]
-url = "https://huggingface.co/ByteDance/Hyper-SD/blob/main/Hyper-SDXL-12steps-CFG-lora.safetensors"
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-12steps-CFG-lora.safetensors"
 dir = "models/lora/sdxl"
 filename = "Hyper-SDXL-12steps-CFG-lora.safetensors"

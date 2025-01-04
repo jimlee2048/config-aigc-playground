@@ -4,18 +4,18 @@
 # dir = "models/vae/sdxl"
 # filename = "sdxl_vae_origin.safetensors"
 [[models]]
-url = "https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/blob/main/sdxl_vae.safetensors"
+url = "https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors"
 dir = "models/vae/sdxl"
 filename = "sdxl_vae_fp16_fix.safetensors"
 
 # TAESDXL Decoder
 [[models]]
-url = "https://huggingface.co/madebyollin/taesdxl/blob/main/taesdxl_decoder.safetensors"
+url = "https://huggingface.co/madebyollin/taesdxl/resolve/main/taesdxl_decoder.safetensors"
 dir = "models/vae_approx"
 filename = "taesdxl_decoder.safetensors"
 
 # TAESDXL Encoder
 [[models]]
-url = "https://huggingface.co/madebyollin/taesdxl/blob/main/taesdxl_encoder.safetensors"
+url = "https://huggingface.co/madebyollin/taesdxl/resolve/main/taesdxl_encoder.safetensors"
 dir = "models/vae_approx"
 filename = "taesdxl_encoder.safetensors"

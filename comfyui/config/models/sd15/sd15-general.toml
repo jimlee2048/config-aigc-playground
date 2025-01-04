@@ -19,12 +19,12 @@ filename = "vae-ft-mse-840000-ema-pruned.safetensors"
 
 # TAESD Decoder
 [[models]]
-url = "https://huggingface.co/madebyollin/taesd/blob/main/taesd_encoder.safetensors"
+url = "https://huggingface.co/madebyollin/taesd/resolve/main/taesd_encoder.safetensors"
 dir = "models/vae_approx"
 filename = "taesd_encoder.safetensors"
 
 # TAESD Encoder
 [[models]]
-url = "https://huggingface.co/madebyollin/taesd/blob/main/taesd_decoder.safetensors"
+url = "https://huggingface.co/madebyollin/taesd/resolve/main/taesd_decoder.safetensors"
 dir = "models/vae_approx"
 filename = "taesd_decoder.safetensors"

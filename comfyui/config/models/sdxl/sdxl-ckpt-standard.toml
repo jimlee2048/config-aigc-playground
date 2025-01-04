@@ -16,7 +16,7 @@ filename = "OpenDalleV1.1.safetensors"
 
 # JuggeranutXL XI
 [[models]]
-url = "https://huggingface.co/RunDiffusion/Juggernaut-XI-v11/blob/main/Juggernaut-XI-byRunDiffusion.safetensors"
+url = "https://huggingface.co/RunDiffusion/Juggernaut-XI-v11/resolve/main/Juggernaut-XI-byRunDiffusion.safetensors"
 dir = "models/checkpoints/sdxl"
 filename = "Juggernaut-XL-v11.safetensors"
 

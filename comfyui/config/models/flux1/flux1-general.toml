@@ -1,12 +1,12 @@
 # VAE
 [[models]]
-url = "https://huggingface.co/black-forest-labs/FLUX.1-dev/blob/main/ae.safetensors"
+url = "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors"
 dir = "models/vae/flux1"
 filename = "ae.safetensors"
 
 # TAEF1 Decoder
 [[models]]
-url = "https://github.com/madebyollin/taesd/blob/main/taef1_decoder.pth"
+url = "https://github.com/madebyollin/taesd/resolve/main/taef1_decoder.pth"
 dir = "models/vae_approx"
 filename = "taef1_decoder.pth"
 

@@ -1,14 +1,14 @@
 [[models]]
-url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-controlnets/blob/main/sd3.5_large_controlnet_blur.safetensors"
+url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-controlnets/resolve/main/sd3.5_large_controlnet_blur.safetensors"
 dir = "models/controlnet/sd35"
 filename = "sd3.5_large_controlnet_blur.safetensors"
 
 [[models]]
-url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-controlnets/blob/main/sd3.5_large_controlnet_canny.safetensors"
+url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-controlnets/resolve/main/sd3.5_large_controlnet_canny.safetensors"
 dir = "models/controlnet/sd35"
 filename = "sd3.5_large_controlnet_canny.safetensors"
 
 [[models]]
-url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-controlnets/blob/main/sd3.5_large_controlnet_depth.safetensors"
+url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-controlnets/resolve/main/sd3.5_large_controlnet_depth.safetensors"
 dir = "models/controlnet/sd35"
 filename = "sd3.5_large_controlnet_depth.safetensors"

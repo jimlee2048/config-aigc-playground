@@ -1,12 +1,12 @@
 # origin sd15
 # [[models]]
 # # url = "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt"
-# url = "https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/blob/main/v1-5-pruned-emaonly.safetensors"
+# url = "https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/resolve/main/v1-5-pruned-emaonly.safetensors"
 # dir = "models/checkpoints/sd15"
 # filename = "v1-5-pruned-emaonly.ckpt"
 
 [[models]]
-url = "https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/blob/main/v1-5-pruned-emaonly-fp16.safetensors"
+url = "https://huggingface.co/Comfy-Org/stable-diffusion-v1-5-archive/resolve/main/v1-5-pruned-emaonly-fp16.safetensors"
 dir = "models/checkpoints/sd15"
 filename = "v1-5-pruned-emaonly-fp16.safetensors"
 
@@ -18,7 +18,7 @@ filename = "DreamShaper_8_pruned.safetensors"
 
 # realisitc vision v6.0 b1
 [[models]]
-url = "https://huggingface.co/SG161222/Realistic_Vision_V6.0_B1_noVAE/blob/main/Realistic_Vision_V6.0_NV_B1_fp16.safetensors"
+url = "https://huggingface.co/SG161222/Realistic_Vision_V6.0_B1_noVAE/resolve/main/Realistic_Vision_V6.0_NV_B1_fp16.safetensors"
 dir = "models/checkpoints/sd15"
 filename = "Realistic_Vision_V6.0_NV_B1_fp16.safetensors"
 

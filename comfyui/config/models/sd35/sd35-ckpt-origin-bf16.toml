@@ -1,14 +1,14 @@
 [[models]]
-url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-large/blob/main/sd3.5_large.safetensors"
+url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-large/resolve/main/sd3.5_large.safetensors"
 dir = "models/checkpoints/sd35"
 filename = "sd3.5_large.safetensors"
 
 # [[models]]
-# url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-large-turbo/blob/main/sd3.5_large_turbo.safetensors"
+# url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-large-turbo/resolve/main/sd3.5_large_turbo.safetensors"
 # dir = "models/checkpoints/sd35"
 # filename = "sd3.5_large_turbo.safetensors"
 
 # [[models]]
-# url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-medium/blob/main/sd3.5_medium.safetensors"
+# url = "https://huggingface.co/stabilityai/stable-diffusion-3.5-medium/resolve/main/sd3.5_medium.safetensors"
 # dir = "models/checkpoints/sd35"
 # filename = "sd3.5_medium.safetensors"
