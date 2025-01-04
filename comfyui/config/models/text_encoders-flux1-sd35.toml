@@ -1,0 +1,41 @@
+# t5
+[[models]]
+url = "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/t5xxl_fp16.safetensors"
+dir = "models/text_encoders"
+filename = "t5xxl_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/t5xxl_fp8_e4m3fn.safetensors"
+dir = "models/text_encoders"
+filename = "t5xxl_fp8_e4m3fn.safetensors"
+
+[[models]]
+url = "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/t5xxl_fp8_e4m3fn_scaled.safetensorss"
+dir = "models/text_encoders"
+filename = "t5xxl_fp8_e4m3fn_scaled.safetensors"
+
+[[models]]
+url = "https://huggingface.co/city96/t5-v1_1-xxl-encoder-gguf/blob/main/t5-v1_1-xxl-encoder-Q8_0.gguf"
+dir = "models/text_encoders"
+filename = "t5-v1_1-xxl-encoder-Q8_0.gguf"
+
+# clip_l
+[[models]]
+url = "https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/clip_l.safetensors"
+dir = "models/text_encoders"
+filename = "clip_l.safetensors"
+
+[[models]]
+url = "https://huggingface.co/zer0int/CLIP-GmP-ViT-L-14/blob/main/ViT-L-14-BEST-smooth-GmP-TE-only-HF-format.safetensors"
+dir = "models/text_encoders"
+filename = "ViT-L-14-BEST-smooth-GmP-TE-only-HF-format.safetensors"
+[[models]]
+url = "https://huggingface.co/zer0int/CLIP-GmP-ViT-L-14/blob/main/ViT-L-14-TEXT-detail-improved-hiT-GmP-TE-only-HF.safetensors"
+dir = "models/text_encoders"
+filename = "ViT-L-14-TEXT-detail-improved-hiT-GmP-TE-only-HF.safetensors"
+
+# clip_g
+[[models]]
+url = "https://huggingface.co/Comfy-Org/stable-diffusion-3.5-fp8/blob/main/text_encoders/clip_g.safetensors"
+dir = "models/text_encoders"
+filename = "clip_g.safetensors"

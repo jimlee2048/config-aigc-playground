@@ -1,0 +1,36 @@
+# sd15 ipadapter
+[[models]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15.safetensors"
+dir = "models/ipadapter"
+filename = "ip-adapter_sd15.safetensors"
+
+[[models]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_light_v11.bin"
+dir = "models/ipadapter"
+filename = "ip-adapter_sd15_light_v11.bin"
+
+[[models]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-plus_sd15.safetensors"
+dir = "models/ipadapter"
+filename = "ip-adapter-plus_sd15.safetensors"
+
+[[models]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-plus-face_sd15.safetensors"
+dir = "models/ipadapter"
+filename = "ip-adapter-plus-face_sd15.safetensors"
+
+[[models]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter-full-face_sd15.safetensors"
+dir = "models/ipadapter"
+filename = "ip-adapter-full-face_sd15.safetensors"
+
+[[models]]
+url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_vit-G.safetensors"
+dir = "models/ipadapter"
+filename = "ip-adapter_sd15_vit-G.safetensors"
+
+# ip-composition-adapter
+[[models]]
+url = "https://huggingface.co/ostris/ip-composition-adapter/resolve/main/ip_plus_composition_sd15.safetensors"
+dir = "models/ipadapter"
+filename = "ip_plus_composition_sd15.safetensors"

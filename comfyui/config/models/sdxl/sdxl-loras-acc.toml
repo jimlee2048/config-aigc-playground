@@ -1,0 +1,57 @@
+# # lcm lora (original)
+# [[models]]
+# url = "https://huggingface.co/latent-consistency/lcm-lora-sdxl/resolve/main/pytorch_lora_weights.safetensors"
+# dir = "models/lora/sdxl"
+# filename = "lcm-lora-sdxl.safetensors"
+
+# # lcm & turbomix loras
+# ## (fix) sampler: euler a; scheduler: normal
+# [[models]]
+# url = "https://civitai.com/api/download/models/246747?type=Model&format=SafeTensor"
+# dir = "models/lora/sdxl"
+# filename = "LCMTurboMix_Euler_A_fix.safetensors"
+
+# ## sampler: dpmpp_sde; scheduler: karras
+# [[models]]
+# url = "https://civitai.com/api/download/models/247778?type=Model&format=SafeTensor"
+# dir = "models/lora/sdxl"
+# filename = "LCMTurboMix_DPMPP_SDE_Karras.safetensors"
+
+# ## sampler: lcm; scheduler: sgm_uniform
+# [[models]]
+# url = "https://civitai.com/api/download/models/268475?type=Model&format=SafeTensor"
+# dir = "models/lora/sdxl"
+# filename = "LCMTurboMix_LCM_SGM_Uniform.safetensors"
+
+
+# # HyperSD SDXL
+# [[models]]
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-1step-lora.safetensors"
+# dir = "models/lora/sdxl"
+# filename = "Hyper-SDXL-1step-lora.safetensors"
+
+# [[models]]
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-2steps-lora.safetensors"
+# dir = "models/lora/sdxl"
+# filename = "Hyper-SDXL-2steps-lora.safetensors"
+
+# [[models]]
+# url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-4steps-lora.safetensors"
+# dir = "models/lora/sdxl"
+# filename = "Hyper-SDXL-4steps-lora.safetensors"
+
+[[models]]
+url = "https://huggingface.co/ByteDance/Hyper-SD/resolve/main/Hyper-SDXL-8steps-lora.safetensors"
+dir = "models/lora/sdxl"
+filename = "Hyper-SDXL-8steps-lora.safetensors"
+
+[[models]]
+url = "https://huggingface.co/ByteDance/Hyper-SD/blob/main/Hyper-SDXL-8steps-CFG-lora.safetensors"
+dir = "models/lora/sdxl"
+filename = "Hyper-SDXL-8steps-CFG-lora.safetensors"
+
+
+[[models]]
+url = "https://huggingface.co/ByteDance/Hyper-SD/blob/main/Hyper-SDXL-12steps-CFG-lora.safetensors"
+dir = "models/lora/sdxl"
+filename = "Hyper-SDXL-12steps-CFG-lora.safetensors"

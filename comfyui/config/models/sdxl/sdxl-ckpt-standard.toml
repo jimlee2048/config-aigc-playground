@@ -1,0 +1,42 @@
+# origin sdxl 1.0
+[[models]]
+url = "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+dir = "models/checkpoints/sdxl"
+filename = "sd_xl_base_1.0.safetensors"
+# [[models]]
+# url = "https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors"
+# dir = "models/checkpoints/sdxl"
+# filename = "sd_xl_refiner_1.0.safetensors"
+
+# opendalle v1.1
+[[models]]
+url = "https://huggingface.co/dataautogpt3/OpenDalleV1.1/resolve/main/OpenDalleV1.1.safetensors"
+dir = "models/checkpoints/sdxl"
+filename = "OpenDalleV1.1.safetensors"
+
+# JuggeranutXL XI
+[[models]]
+url = "https://huggingface.co/RunDiffusion/Juggernaut-XI-v11/blob/main/Juggernaut-XI-byRunDiffusion.safetensors"
+dir = "models/checkpoints/sdxl"
+filename = "Juggernaut-XL-v11.safetensors"
+
+# LEOSAM's HelloWorld XL V7
+# https://civitai.com/models/43977/leosams-helloworld-xl
+[[models]]
+url = "https://civitai.com/api/download/models/570138?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+dir = "models/checkpoints/sdxl"
+filename = "helloworldXL70.safetensors"
+
+# STOIQO NewReality XL PRO
+# https://civitai.com/models/161068?modelVersionId=690310
+[[models]]
+url = "https://civitai.com/api/download/models/690310?type=Model&format=SafeTensor&size=full&fp=fp16"
+dir = "models/checkpoints/sdxl"
+filename = "STOIQO_NewReality_XL_PRO.safetensors"
+
+# epicrealismXL VXI-aBEAST
+# https://civitai.com/models/277058
+[[models]]
+url = "https://civitai.com/api/download/models/1156226?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+dir = "models/checkpoints/sdxl"
+filename = "epicrealismXL_vxiAbeast.safetensors"

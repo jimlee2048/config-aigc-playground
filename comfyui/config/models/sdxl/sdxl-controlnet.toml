@@ -1,0 +1,15 @@
+[[models]]
+url = "https://huggingface.co/xinsir/controlnet-union-sdxl-1.0/blob/main/diffusion_pytorch_model_promax.safetensors"
+dir = "models/controlnet/sdxl"
+filename = "xinsir-controlnet-sdxl-union-promax.safetensors"
+
+[[models]]
+url = "https://huggingface.co/2vXpSwA7/iroiro-lora/blob/main/test_controlnet2/CN-anytest_v4-marged.safetensors"
+dir = "models/controlnet/sdxl"
+filename = "controlnet-sdxl-anytest_v4-marged.safetensors"
+
+
+[[models]]
+url = "https://huggingface.co/TheMistoAI/MistoLine/blob/main/mistoLine_fp16.safetensors"
+dir = "models/controlnet/sdxl"
+filename = "mistoLine_fp16.safetensors"

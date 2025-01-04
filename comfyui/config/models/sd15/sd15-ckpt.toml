@@ -1,0 +1,23 @@
+# origin sd15
+[[models]]
+url = "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt"
+dir = "models/checkpoints/sd15"
+filename = "v1-5-pruned-emaonly.ckpt"
+
+# dreamshaper 8
+[[models]]
+url = "https://huggingface.co/Lykon/DreamShaper/resolve/main/DreamShaper_8_pruned.safetensors"
+dir = "models/checkpoints/sd15"
+filename = "DreamShaper_8_pruned.safetensors"
+
+# realisitc vision v6.0 b1
+[[models]]
+url = "https://huggingface.co/SG161222/Realistic_Vision_V6.0_B1_noVAE/blob/main/Realistic_Vision_V6.0_NV_B1_fp16.safetensors"
+dir = "models/checkpoints/sd15"
+filename = "Realistic_Vision_V6.0_NV_B1_fp16.safetensors"
+
+# anything v5
+[[models]]
+url = "https://civitai.com/api/download/models/30163?type=Model&format=SafeTensor&size=full&fp=fp16"
+dir = "models/checkpoints/sd15"
+filename = "AnythingV5_v5PrtRE.safetensors"

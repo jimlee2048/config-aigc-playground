@@ -1,0 +1,30 @@
+# VAE
+## origin sd15 vae
+[[models]]
+url = "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+dir = "models/vae/sd15"
+filename = "vae-ft-mse-840000-ema-pruned.safetensors"
+
+# ## orangemix vae
+# [[models]]
+# url = "https://huggingface.co/WarriorMama777/OrangeMixs/resolve/main/VAEs/orangemix.vae.pt"
+# dir = "models/vae/sd15"
+# filename = "orangemix.vae.pt"
+
+# ## wd14 anime vae
+# [[models]]
+# url = "https://huggingface.co/hakurei/waifu-diffusion-v1-4/resolve/main/vae/kl-f8-anime2.ckpt"
+# dir = "models/vae/sd15"
+# filename = "kl-f8-anime2.ckpt"
+
+# TAESD Decoder
+[[models]]
+url = "https://huggingface.co/madebyollin/taesd/blob/main/taesd_encoder.safetensors"
+dir = "models/vae_approx"
+filename = "taesd_encoder.safetensors"
+
+# TAESD Encoder
+[[models]]
+url = "https://huggingface.co/madebyollin/taesd/blob/main/taesd_decoder.safetensors"
+dir = "models/vae_approx"
+filename = "taesd_decoder.safetensors"
