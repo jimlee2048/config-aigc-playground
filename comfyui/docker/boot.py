@@ -10,7 +10,6 @@ from comfy_cli.config_manager import ConfigManager
 import comfy_cli.constants as cli_constants
 from rich.console import Console
 
-DEBUG = os.environ.get('DEBUG', False)
 HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
 CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
 COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)

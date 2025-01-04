@@ -74,6 +74,5 @@ ENV BOOT_CONFIG_DIR=${WORKDIR}/boot_config
 ENV BOOT_INIT_NODE=false
 ENV BOOT_INIT_MODEL=false
 
-ENV DEBUG=false
 EXPOSE 8188
 CMD [ "python", "boot.py" ]
