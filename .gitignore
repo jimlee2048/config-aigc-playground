@@ -7,3 +7,4 @@ volume/
 .env
 !example.env
 debug
+.cache
