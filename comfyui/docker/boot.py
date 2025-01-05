@@ -24,6 +24,7 @@ BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
 BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
 BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
 BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
+BOOT_INIT_NODE_EXCLUDE = ["https://github.com/ltdrdata/ComfyUI-Manager"] 
 
 class BootProgress:
     def __init__(self):
@@ -112,10 +113,12 @@ def load_nodes_config(boot_config: dict) -> list[dict]:
     nodes_config = boot_config.get('custom_nodes', [])
     if not nodes_config:
         return []
-    
-    for node in nodes_config:
+
+    for node in nodes_config.copy():
         try:
-            # use lower case to follow comfyui registry
+            if node['url'] in BOOT_INIT_NODE_EXCLUDE:
+                nodes_config.remove(node)
+                continue
             node['url'] = preprocess_url(node['url']).lower()
             git_url = giturlparse.parse(node['url'])
             # validate git url
@@ -123,10 +126,6 @@ def load_nodes_config(boot_config: dict) -> list[dict]:
                 raise Exception(f"Invalid git URL: {node['url']}")
             # pharse custome node name from url
             node['name'] = node.get('name', git_url.name)
-            # drop comfyui-manager
-            if node['name'] == "comfyui-manager":
-                nodes_config.remove(node)
-                continue
             node['path'] = node.get('path', str(COMFYUI_PATH / "custom_nodes" / node['name']))
         except KeyError as e:
             console.print(f"[WARN] ⚠️ Invalid node config: {node}\n{str(e)}", style="yellow")
@@ -236,6 +235,9 @@ def install_node(config: dict, progress: BootProgress = None) -> bool:
         return True
     try:
         node_name = config['name']
+        if node_name in BOOT_INIT_NODE_EXCLUDE:
+            console.print(f"[WARN] ⚠️ Cannot install node: {node_name}", style="yellow")
+            return False
         node_url = config['url']
         msg = f"[INFO] 📦 Installing node: {node_name}"
         if progress:
@@ -255,6 +257,9 @@ def uninstall_node(config: dict, progress: BootProgress = None) -> bool:
         return True
     try:
         node_name = config['name']
+        if node_name in BOOT_INIT_NODE_EXCLUDE:
+            console.print(f"[WARN] ⚠️ Cannot uninstall node: {node_name}", style="yellow")
+            return False
         node_path = Path(config['path'])
         msg = f"[INFO] 🗑️ Uninstalling node: {node_name}"
         if progress:
