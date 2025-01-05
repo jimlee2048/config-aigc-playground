@@ -10,16 +10,17 @@ from comfy_cli.config_manager import ConfigManager
 import comfy_cli.constants as cli_constants
 from rich.console import Console
 
+WORKDIR = Path(os.environ.get('WORKDIR', "/workspace"))
 HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
 CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
-COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
 BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
-BOOT_CONFIG_DIR = os.environ.get('BOOT_CONFIG_DIR', None)
+BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
 BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
 BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
 BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
 BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
 COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
+COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
 
 console = Console()
 
@@ -43,8 +44,6 @@ class BootProgress:
         if msg:
             console.print(f"[yellow]{overall_progress}[/yellow]: {msg}")
 
-boot_progress = BootProgress()
-
 def compile_pattern(pattern_str: str) -> re.Pattern:
     if not pattern_str:
         return None
@@ -54,7 +53,84 @@ def compile_pattern(pattern_str: str) -> re.Pattern:
         console.print(f"Invalid regex pattern '{pattern_str}': {str(e)}", style="red")
         return None
 
-def load_boot_config(path: str) -> dict:
+def preprocess_url(url: str) -> str:
+    # check if url is valid
+    valid_pattern = re.compile(r'^https?://')
+    if not bool(valid_pattern.match(url)):
+        raise Exception(f"Invalid URL: {url}")
+    # chinese mainland network settings
+    if BOOT_CN_NETWORK:
+        if 'huggingface.co' in url:
+            url = url.replace('https://huggingface.co', os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'))
+        if 'civitai.com' in url:
+            url = url.replace('https://civitai.com', 'https://civitai.work')
+    return url
+
+
+def drop_duplicates_config(config: list[dict], cond_key: list[str]) -> tuple[list[dict], int]:
+    unique_items = []
+    unique_kv_tracker = set()
+    
+    for item in config:
+        # Create tuple of values for comparison
+        unique_kv = tuple(item[key] for key in cond_key)
+        
+        if unique_kv not in unique_kv_tracker:
+            unique_items.append(item)
+            unique_kv_tracker.add(unique_kv)
+    
+    duplicates_count = len(config) - len(unique_items)
+    return unique_items, duplicates_count
+
+
+def load_models_config(boot_config: dict) -> dict:
+    models_config = boot_config.get('models', [])
+    if not models_config:
+        return []
+
+    for model in models_config:
+        try:
+            model['url'] = preprocess_url(model['url'])
+            model['path'] = COMFYUI_PATH / model['dir'] / model['filename']
+        except KeyError as e:
+            console.print(f"Invalid model config: {model}\n{str(e)}", style="yellow")
+            continue
+
+    # drop duplicates
+    models_config, duplicates_count = drop_duplicates_config(models_config, ['path'])
+    if duplicates_count:
+        console.print(f"Ignoring {duplicates_count} duplicate models in boot config", style="yellow")
+    return models_config
+
+def load_nodes_config(boot_config: dict) -> dict:
+    nodes_config = boot_config.get('custom_nodes', [])
+    if not nodes_config:
+        return []
+    
+    for node in nodes_config:
+        try: 
+            # lowercase urls
+            node['url'] = preprocess_url(node['url']).lower()
+            git_url = giturlparse.parse(node['url'])
+            # validate git url
+            if not git_url.valid:
+                raise Exception(f"Invalid git URL: {node['url']}")
+            # pharse custome node name from url
+            node['name'] = git_url.name
+            node['path'] = COMFYUI_PATH / "custom_nodes" / node['name']            
+        except KeyError as e:
+            console.print(f"Invalid node config: {node}\n{str(e)}", style="yellow")
+            continue
+
+    # drop duplicates
+    nodes_config, duplicates_count = drop_duplicates_config(nodes_config, ['name'])
+    if duplicates_count:
+        console.print(f"Ignoring {duplicates_count} duplicate nodes in boot config", style="yellow")
+
+    return nodes_config
+
+
+def load_boot_config(path: Path) -> dict:
 
     console.print(f"🔍 Loading boot config from {path}...", style="blue")
 
@@ -90,33 +166,6 @@ def load_boot_config(path: str) -> dict:
     try:
         for file in config_files:
             boot_config.update(tomllib.loads(file.read_text()))
-
-        # ignore duplicate models in config
-        if 'models' in boot_config:
-            unique_keys = set()
-            unique_models = [
-                model for model in boot_config['models']
-                if (model['filename'], model['url'], model['dir']) not in unique_keys 
-                and not unique_keys.add((model['filename'], model['url'], model['dir']))
-            ]
-            duplicates_count = len(boot_config['models']) - len(unique_models)
-            boot_config['models'] = unique_models
-            if duplicates_count:
-                console.print("⚠️ Ignoring duplicate models in boot config", style="yellow")
-
-        # ignore duplicate nodes in config
-        if 'custom_nodes' in boot_config:
-            unique_keys = set()
-            unique_nodes = [
-                node for node in boot_config['custom_nodes']
-                if (node['url']) not in unique_keys 
-                and not unique_keys.add((node['url']))
-            ]
-            duplicates_count = len(boot_config['custom_nodes']) - len(unique_nodes)
-            boot_config['custom_nodes'] = unique_nodes
-            if duplicates_count:
-                console.print(f"[yellow]Ignoring {duplicates_count} duplicate nodes in boot config[/yellow]")
-
     except Exception as e:
         console.print(f"Error loading boot config:\n{str(e)}", style="red")
         exit(1)
@@ -129,85 +178,74 @@ def is_valid_git_repo(path: str) -> bool:
     except Exception as e:
         return False
 
-def process_node(node):
-    try:
-        node_url = node['url']
-        node_name = giturlparse.parse(node_url).name
-        if not giturlparse.parse(node_url).valid:
-            raise Exception("Invalid git URL")
-        
-        boot_progress.advance(msg=f"Processing custom nodes: {node_name}")
-        
-        node_path = COMFYUI_PATH / "custom_nodes" / node_name
-        if node_path.exists():
-            if node_path.is_dir() and is_valid_git_repo(node_path):
-                console.print(f"ℹ️ [cyan]{node_name}[/cyan] already exists, skipping...")
-                return
-            else:
-                console.print(f"⚠️ [yellow]{node_name}[/yellow] is corrupted, removing...")
-                shutil.rmtree(node_path)
-
-        console.print(f"🔧 Installing custom nodes [blue]{node_name}[/blue]...")
-        subprocess.run(["comfy", "node", "install", node_url], check=True)
-
-        node_script = node.get('script', '')
-        if node_script:
-            exec_script(node_script)
-            
-    except Exception as e:
-        console.print(f"❌ Error processing [red]{node_name}[/red]:\n{str(e)}", style="red")
-
-def process_model(model):
-    try:
-        model_url = model['url']
-        model_dir = model['dir']
-        model_filename = model['filename']
-        
-        boot_progress.advance(msg=f"Processing model: {model_filename}")
-        
-        model_path = COMFYUI_PATH / model_dir / model_filename
-        if model_path.exists():
-            if model_path.is_file():
-                console.print(f"ℹ️ [cyan]{model_filename}[/cyan] already exists, skipping...")
-                return
-            else:
-                console.print(f"⚠️ [yellow]{model_filename}[/yellow] is corrupted, removing...")
-                shutil.rmtree(model_path)
-
-        if BOOT_CN_NETWORK:
-            if 'huggingface.co' in model_url:
-                model_url = model_url.replace('https://huggingface.co', os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'))
-            if 'civitai.com' in model_url:
-                model_url = model_url.replace('https://civitai.com', 'https://civitai.work')
-                
-        console.print(f"⬇️ Downloading model [blue]{model_filename}[/blue] -> [blue]{model_dir}[/blue]")
-        download_model(model_url, model_dir, model_filename)
-            
-    except Exception as e:
-        console.print(f"❌ Error processing model [red]{model_filename}[/red]:\n{str(e)}", style="red")
-
-def init_nodes(boot_config: dict):
-    node_config = boot_config.get('custom_nodes', [])
+def init_nodes(node_config: dict):
     all_count = len(node_config)
-    if all_count > 0:
-        console.print(f"Installing {all_count} custom nodes in boot config:", style="blue")
-        console.print("\n".join([f"  📦 {node['url']}" for node in node_config]), style="blue")
-        boot_progress.start(all_count)
-        for node in node_config:
-            process_node(node)
-    return all_count
+    if not all_count:
+        console.print("No custom nodes found in boot config, skip.", style="blue")
+        return False
+    console.print(f"Installing {all_count} custom nodes in boot config:", style="blue")
+    console.print("\n".join([f"  📦 {node['url']}" for node in node_config]), style="blue")
+    nodes_progress = BootProgress()
+    nodes_progress.start(all_count)
+    for node in node_config:
+        try:
+            node_url = node['url']
+            node_name = node['name']
+            node_path = node['path']
+            nodes_progress.advance(msg=f"Processing custom nodes: {node_name}")
 
-def init_models(boot_config: dict):
-    model_config = boot_config.get('models', [])
+            if node_path.exists():
+                if node_path.is_dir() and is_valid_git_repo(node_path):
+                    console.print(f"ℹ️ [cyan]{node_name}[/cyan] already exists, skipping...")
+                    continue
+                else:
+                    console.print(f"⚠️ [yellow]{node_name}[/yellow] is corrupted, removing...")
+                    shutil.rmtree(node_path)
+
+            console.print(f"🔧 Installing custom nodes [blue]{node_name}[/blue]...")
+            subprocess.run(["comfy", "node", "install", node_url], check=True)
+
+            node_script = node.get('script', '')
+            if node_script:
+                exec_script(node_script)
+
+        except Exception as e:
+            console.print(f"❌ Error processing custom nodes [red]{node_name}[/red]:\n{str(e)}", style="red")
+    return True
+
+
+def init_models(model_config: dict):
     all_count = len(model_config)
-    
-    if all_count > 0:
-        console.print(f"Downloading {all_count} models in boot config:", style="blue")
-        console.print("\n".join([f"  📦 {model['filename']}" for model in model_config]), style="blue")
-        boot_progress.start(all_count)
-        for model in model_config:
-            process_model(model)
-    return all_count
+    if not all_count:
+        console.print("No models found in boot config, skip.", style="blue")
+        return False
+    console.print(f"Downloading {all_count} models in boot config:", style="blue")
+    console.print("\n".join([f"  📦 {model['filename']}" for model in model_config]), style="blue")
+    model_progress = BootProgress()
+    model_progress.start(all_count)
+    for model in model_config:
+        try:
+            model_url = model['url']
+            model_dir = model['dir']
+            model_filename = model['filename']
+            model_path = model['path']
+            model_progress.advance(msg=f"Processing model: {model_filename}")
+
+            if model_path.exists():
+                if model_path.is_file():
+                    console.print(f"ℹ️ [cyan]{model_filename}[/cyan] already exists, skipping...")
+                    continue
+                else:
+                    console.print(f"⚠️ [yellow]{model_filename}[/yellow] is corrupted, removing...")
+                    shutil.rmtree(model_path)
+
+            console.print(f"⬇️ Downloading model [blue]{model_filename}[/blue] -> [blue]{model_dir}[/blue]")
+            download_model(model_url, model_dir, model_filename)
+
+        except Exception as e:
+            console.print(f"❌ Error processing model [red]{model_filename}[/red]:\n{str(e)}", style="red")
+    return True
+
 
 def exec_script(path: str) -> bool:
     script = Path(path)
@@ -250,7 +288,6 @@ if __name__ == '__main__':
         os.environ['HF_ENDPOINT'] = "https://hf-mirror.com"
         if HF_API_TOKEN:
             console.print("⚠️ Your [yellow]HF_API_TOKEN[/yellow] will be sent to a third-party server 'https://hf-mirror.com' when downloading authorized models", style="yellow")
-        # TODO: git 
 
     cli_config_manager = ConfigManager()
     if HF_API_TOKEN:
@@ -262,17 +299,12 @@ if __name__ == '__main__':
     if not boot_config:
         console.print("🔍 No boot config found, continuing with default settings...", style="blue")
     else:
-        total_steps = 0
         if BOOT_INIT_NODE:
-            total_steps += len(boot_config.get('custom_nodes', []))
+            nodes_config = load_nodes_config(boot_config)
+            init_nodes(nodes_config)
         if BOOT_INIT_MODEL:
-            total_steps += len(boot_config.get('models', []))
-            
-        boot_progress.start(total_steps)
-        if BOOT_INIT_NODE:
-            init_nodes(boot_config)
-        if BOOT_INIT_MODEL:
-            init_models(boot_config)
+            models_config = load_models_config(boot_config)
+            init_models(models_config)
 
     launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
     launch_args_str = " ".join(launch_args_list).strip()
