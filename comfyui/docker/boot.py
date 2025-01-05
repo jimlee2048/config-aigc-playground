@@ -211,20 +211,23 @@ def is_node_exists(config: dict) -> bool:
     node_alt_path = Path(COMFYUI_PATH / "custom_nodes" / node_alt_name)
     if node_path.exists():
         if node_path.is_dir() and is_valid_git_repo(node_path):
-            console.print(f"[INFO] ℹ️ Node already exists: {node_name}", style="blue")
+            console.print(f"[INFO] ℹ️ {node_name} already exists in path: {node_path}", style="blue")
             return True
         else:
-            console.print(f"[WARN] ⚠️ Invalid node detected, removing: {node_name}", style="yellow")
+            console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {node_path}", style="yellow")
             shutil.rmtree(node_path)
     elif node_alt_path.exists():
-        console.print(f"[WARN] ⚠️ Node found in unexpected path, moving: {node_name}", style="yellow")
+        console.print(f"[WARN] ⚠️ {node_name} found in unexpected path, moving:", style="yellow")
         console.print(f"      └─ From: {node_alt_path}", style="yellow")
         console.print(f"      └─ To: {node_path}", style="yellow")
         move_files(node_alt_path, node_path)
         return True
+    console.print(f"[INFO] ℹ️ {node_name} not found in path: {node_path}", style="blue")
     return False
 
 def install_node(config: dict, progress: BootProgress = None) -> bool:
+    if is_node_exists(config):
+        return True
     try:
         node_name = config['name']
         node_url = config['url']
@@ -242,6 +245,8 @@ def install_node(config: dict, progress: BootProgress = None) -> bool:
         return False
 
 def uninstall_node(config: dict, progress: BootProgress = None) -> bool:
+    if not is_node_exists(config):
+        return True
     try:
         node_name = config['name']
         node_path = Path(config['path'])
@@ -281,8 +286,7 @@ def init_nodes(current_config: list[dict], prev_config: list[dict] = None) -> bo
         install_progress = BootProgress()
         install_progress.start(install_count)
         for node in install_nodes:
-            if not is_node_exists(node):
-                install_node(node, install_progress)
+            install_node(node, install_progress)
     if uninstall_nodes:
         uninstall_count = len(uninstall_nodes)
         console.print(f"[INFO] 🗑️ Uninstalling {uninstall_count} nodes:", style="blue")
@@ -299,14 +303,17 @@ def is_model_exists(config: dict) -> bool:
     model_filename = config['filename']
     if model_path.exists():
         if model_path.is_file():
-            console.print(f"[INFO] ℹ️ Model already exists: {model_filename}", style="blue")
+            console.print(f"[INFO] ℹ️ {model_filename} already exists in path: {model_path} ", style="blue")
             return True
         else:
-            console.print(f"[WARN] ⚠️ Invalid model detected, removing: {model_filename}", style="yellow")
+            console.print(f"[WARN] ⚠️ {model_filename} invalid, removing: {model_path}", style="yellow")
             shutil.rmtree(model_path)
+    console.print(f"[INFO] ℹ️ {model_filename} not found in path: {model_path}", style="blue")
     return False
 
 def download_model(config: dict, progress: BootProgress = None) -> bool:
+    if is_model_exists(config):
+        return True
     try:
         model_url = config['url']
         model_dir = config['dir']
@@ -336,6 +343,8 @@ def move_files(src: Path, dst: Path, progress: BootProgress = None) -> bool:
         return False
 
 def remove_model(config: dict, progress: BootProgress = None) -> bool:
+    if not is_model_exists(config):
+        return True
     try:
         model_path = Path(config['path'])
         model_filename = config['filename']
@@ -390,8 +399,7 @@ def init_models(current_config: list, prev_config: list = None):
         download_progress = BootProgress()
         download_progress.start(download_count)
         for model in download_models:
-            if not is_model_exists(model):
-                download_model(model, download_progress)
+            download_model(model, download_progress)
     if move_models:
         move_count = len(move_models)
         console.print(f"[INFO] 📦 Moving {move_count} models:", style="blue")
