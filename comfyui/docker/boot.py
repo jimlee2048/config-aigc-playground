@@ -114,14 +114,19 @@ def load_nodes_config(boot_config: dict) -> list[dict]:
         return []
     
     for node in nodes_config:
-        try: 
-            node['url'] = preprocess_url(node['url'])
+        try:
+            # use lower case to follow comfyui registry
+            node['url'] = preprocess_url(node['url']).lower()
             git_url = giturlparse.parse(node['url'])
             # validate git url
             if not git_url.valid:
                 raise Exception(f"Invalid git URL: {node['url']}")
             # pharse custome node name from url
             node['name'] = node.get('name', git_url.name)
+            # drop comfyui-manager
+            if node['name'] == "comfyui-manager":
+                nodes_config.remove(node)
+                continue
             node['path'] = node.get('path', str(COMFYUI_PATH / "custom_nodes" / node['name']))
         except KeyError as e:
             console.print(f"[WARN] ⚠️ Invalid node config: {node}\n{str(e)}", style="yellow")
@@ -207,8 +212,9 @@ def is_valid_git_repo(path: str) -> bool:
 def is_node_exists(config: dict) -> bool:
     node_name = config['name']
     node_path = Path(config['path'])
-    node_alt_name = node_name.lower()
-    node_alt_path = Path(COMFYUI_PATH / "custom_nodes" / node_alt_name)
+    ## not processing node_alt_name (lowercase) for now
+    # node_alt_name = node_name.lower()
+    # node_alt_path = Path(COMFYUI_PATH / "custom_nodes" / node_alt_name)
     if node_path.exists():
         if node_path.is_dir() and is_valid_git_repo(node_path):
             console.print(f"[INFO] ℹ️ {node_name} already exists in path: {node_path}", style="blue")
@@ -216,12 +222,12 @@ def is_node_exists(config: dict) -> bool:
         else:
             console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {node_path}", style="yellow")
             shutil.rmtree(node_path)
-    elif node_alt_path.exists():
-        console.print(f"[WARN] ⚠️ {node_name} found in unexpected path, moving:", style="yellow")
-        console.print(f"      └─ From: {node_alt_path}", style="yellow")
-        console.print(f"      └─ To: {node_path}", style="yellow")
-        move_files(node_alt_path, node_path)
-        return True
+    # elif node_alt_path.exists():
+    #     console.print(f"[WARN] ⚠️ {node_name} found in unexpected path, moving:", style="yellow")
+    #     console.print(f"      └─ From: {node_alt_path}", style="yellow")
+    #     console.print(f"      └─ To: {node_path}", style="yellow")
+    #     move_files(node_alt_path, node_path)
+    #     return True
     console.print(f"[INFO] ℹ️ {node_name} not found in path: {node_path}", style="blue")
     return False
 
