@@ -244,12 +244,14 @@ def install_node(config: dict, progress: BootProgress = None) -> bool:
 def uninstall_node(config: dict, progress: BootProgress = None) -> bool:
     try:
         node_name = config['name']
+        node_path = Path(config['path'])
         msg = f"[INFO] 🗑️ Uninstalling node: {node_name}"
         if progress:
             progress.advance(msg=msg, style="blue")
         else:
             console.print(msg, style="blue")
-        subprocess.run(["comfy", "node", "uninstall", node_name.lower()], check=True)
+        # subprocess.run(["comfy", "node", "uninstall", node_name.lower()], check=True)
+        shutil.rmtree(node_path)
         return True
     except Exception as e:
         console.print(f"[ERROR] ❌ Failed to uninstall node {node_name}: {str(e)}", style="red")
@@ -294,12 +296,13 @@ def init_nodes(current_config: list[dict], prev_config: list[dict] = None) -> bo
 
 def is_model_exists(config: dict) -> bool:
     model_path = Path(config['path'])
+    model_filename = config['filename']
     if model_path.exists():
         if model_path.is_file():
-            console.print(f"[INFO] ℹ️ Model already exists: {config['filename']}", style="blue")
+            console.print(f"[INFO] ℹ️ Model already exists: {model_filename}", style="blue")
             return True
         else:
-            console.print(f"[WARN] ⚠️ Invalid model detected, removing: {config['filename']}", style="yellow")
+            console.print(f"[WARN] ⚠️ Invalid model detected, removing: {model_filename}", style="yellow")
             shutil.rmtree(model_path)
     return False
 
