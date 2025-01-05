@@ -1,8 +1,3 @@
-# ### animaginexl
-# [[models.checkpoints.items]]
-# category = "sdxl"
-# url ="https://huggingface.co/cagliostrolab/animagine-xl-3.1/resolve/main/animagine-xl-3.1.safetensors"
-
 # Pony Diffusion V6 XL
 [[models]]
 url = "https://civitai.com/api/download/models/290640?type=Model&format=SafeTensor&size=pruned&fp=fp16"
@@ -33,3 +28,8 @@ url = "https://huggingface.co/Laxhar/noobai-XL-Vpred-1.0/resolve/main/NoobAI-XL-
 dir = "models/checkpoints/sdxl"
 filename = "noobai-XL-Vpred-1.0.safetensors"
 
+# Nyanko XL Alpha
+[[models]]
+url = "https://huggingface.co/nyanko7/nyaflow-xl-alpha/resolve/main/model.safetensors"
+dir = "models/checkpoints/sdxl"
+filename = "nyaflow-xl-alpha.safetensors"
