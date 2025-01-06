@@ -4,6 +4,7 @@ import shutil
 import re
 from pathlib import Path
 import tomllib
+import urllib
 import json
 import git
 import giturlparse
@@ -19,12 +20,12 @@ COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
 COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
 BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
 BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
-BOOT_CONFIG_PREV_PATH = COMFYUI_PATH / "user" / "boot_config.prev.json"
+BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
 BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
 BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
 BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
 BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
-BOOT_INIT_NODE_EXCLUDE = ["https://github.com/ltdrdata/ComfyUI-Manager"] 
+BOOT_INIT_NODE_EXCLUDE = ["ComfyUI-Manager", "comfyui-manager"] 
 
 class BootProgress:
     def __init__(self):
@@ -60,16 +61,18 @@ def compile_pattern(pattern_str: str) -> re.Pattern:
         return None
 
 def preprocess_url(url: str) -> str:
+    parsed_url = urllib.parse.urlparse(url)
     # check if url is valid
-    valid_pattern = re.compile(r'^https?://')
-    if not bool(valid_pattern.match(url)):
+    if not parsed_url.netloc:
         raise Exception(f"Invalid URL: {url}")
     # chinese mainland network settings
     if BOOT_CN_NETWORK:
-        if 'huggingface.co' in url:
-            url = url.replace('https://huggingface.co', os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'))
-        if 'civitai.com' in url:
-            url = url.replace('https://civitai.com', 'https://civitai.work')
+        fr_map = {
+            'huggingface.co': 'hf-mirror.com',
+            'civitai.com': 'civitai.work'
+        }
+        if parsed_url.netloc in fr_map:
+            url = parsed_url._replace(netloc=fr_map[parsed_url.netloc]).geturl()
     return url
 
 
@@ -94,10 +97,17 @@ def load_models_config(boot_config: dict) -> list[dict]:
     if not models_config:
         return []
 
-    for model in models_config:
+    for model in models_config.copy():
         try:
             model['url'] = preprocess_url(model['url'])
             model['path'] = str(COMFYUI_PATH / model['dir'] / model['filename'])
+            should_exclude = (
+                is_model_exists(model)
+            )
+            if should_exclude:
+                console.print(f"[INFO] ℹ️ Skip model: {model['filename']}", style="blue")
+                models_config.remove(model)
+                continue
         except KeyError as e:
             console.print(f"[WARN] ⚠️ Invalid model config: {model}\n{str(e)}", style="yellow")
             continue
@@ -116,17 +126,24 @@ def load_nodes_config(boot_config: dict) -> list[dict]:
 
     for node in nodes_config.copy():
         try:
-            if node['url'] in BOOT_INIT_NODE_EXCLUDE:
+            node['url'] = preprocess_url(node['url'])
+            node_repo = giturlparse.parse(node['url'])
+            # validate git url
+            if not node_repo.valid:
+                raise Exception(f"Invalid git URL: {node['url']}")
+            # parse custom node name from URL
+            node['name'] = node.get('name', node_repo.name)
+            node['alt_name'] = node.get('alt_name', node['name'].lower())
+            node['path'] = find_node_path(node)
+            should_exclude = (
+                node['name'] in BOOT_INIT_NODE_EXCLUDE
+                or node['alt_name'] in BOOT_INIT_NODE_EXCLUDE
+                or node['path']
+            )
+            if should_exclude:
+                console.print(f"[INFO] ℹ️ Skip node: {node['name']}", style="blue")
                 nodes_config.remove(node)
                 continue
-            node['url'] = preprocess_url(node['url']).lower()
-            git_url = giturlparse.parse(node['url'])
-            # validate git url
-            if not git_url.valid:
-                raise Exception(f"Invalid git URL: {node['url']}")
-            # pharse custome node name from url
-            node['name'] = node.get('name', git_url.name)
-            node['path'] = node.get('path', str(COMFYUI_PATH / "custom_nodes" / node['name']))
         except KeyError as e:
             console.print(f"[WARN] ⚠️ Invalid node config: {node}\n{str(e)}", style="yellow")
             continue
@@ -208,31 +225,26 @@ def is_valid_git_repo(path: str) -> bool:
     except Exception as e:
         return False
 
-def is_node_exists(config: dict) -> bool:
+def find_node_path(config: dict) -> Path:
     node_name = config['name']
-    node_path = Path(config['path'])
-    ## not processing node_alt_name (lowercase) for now
-    # node_alt_name = node_name.lower()
-    # node_alt_path = Path(COMFYUI_PATH / "custom_nodes" / node_alt_name)
-    if node_path.exists():
-        if node_path.is_dir() and is_valid_git_repo(node_path):
-            console.print(f"[INFO] ℹ️ {node_name} already exists in path: {node_path}", style="blue")
-            return True
-        else:
-            console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {node_path}", style="yellow")
-            shutil.rmtree(node_path)
-    # elif node_alt_path.exists():
-    #     console.print(f"[WARN] ⚠️ {node_name} found in unexpected path, moving:", style="yellow")
-    #     console.print(f"      └─ From: {node_alt_path}", style="yellow")
-    #     console.print(f"      └─ To: {node_path}", style="yellow")
-    #     move_files(node_alt_path, node_path)
-    #     return True
-    console.print(f"[INFO] ℹ️ {node_name} not found in path: {node_path}", style="blue")
-    return False
+    node_alt_name = config.get('alt_name', node_name.lower())
+    possible_paths = [
+        Path(config.get('path', COMFYUI_PATH / "custom_nodes" / node_name)),
+        Path(COMFYUI_PATH / "custom_nodes" / node_alt_name)
+    ]
+    for p in possible_paths:
+        if p.exists() and is_valid_git_repo(p):
+            console.print(f"[INFO] ℹ️ {node_name} already exists in path: {p}", style="blue")
+            return p
+        elif p.is_dir():
+            console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {p}", style="yellow")
+            shutil.rmtree(p)
+        elif p.is_file():
+            console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {p}", style="yellow")
+            p.unlink()
+    return None
 
 def install_node(config: dict, progress: BootProgress = None) -> bool:
-    if is_node_exists(config):
-        return True
     try:
         node_name = config['name']
         if node_name in BOOT_INIT_NODE_EXCLUDE:
@@ -253,8 +265,6 @@ def install_node(config: dict, progress: BootProgress = None) -> bool:
         return False
 
 def uninstall_node(config: dict, progress: BootProgress = None) -> bool:
-    if not is_node_exists(config):
-        return True
     try:
         node_name = config['name']
         if node_name in BOOT_INIT_NODE_EXCLUDE:
@@ -323,8 +333,6 @@ def is_model_exists(config: dict) -> bool:
     return False
 
 def download_model(config: dict, progress: BootProgress = None) -> bool:
-    if is_model_exists(config):
-        return True
     try:
         model_url = config['url']
         model_dir = config['dir']
@@ -354,8 +362,6 @@ def move_files(src: Path, dst: Path, progress: BootProgress = None) -> bool:
         return False
 
 def remove_model(config: dict, progress: BootProgress = None) -> bool:
-    if not is_model_exists(config):
-        return True
     try:
         model_path = Path(config['path'])
         model_filename = config['filename']
