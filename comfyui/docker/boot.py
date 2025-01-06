@@ -101,13 +101,6 @@ def load_models_config(boot_config: dict) -> list[dict]:
         try:
             model['url'] = preprocess_url(model['url'])
             model['path'] = str(COMFYUI_PATH / model['dir'] / model['filename'])
-            should_exclude = (
-                is_model_exists(model)
-            )
-            if should_exclude:
-                console.print(f"[INFO] ℹ️ Skip model: {model['filename']}", style="blue")
-                models_config.remove(model)
-                continue
         except KeyError as e:
             console.print(f"[WARN] ⚠️ Invalid model config: {model}\n{str(e)}", style="yellow")
             continue
@@ -134,14 +127,12 @@ def load_nodes_config(boot_config: dict) -> list[dict]:
             # parse custom node name from URL
             node['name'] = node.get('name', node_repo.name)
             node['alt_name'] = node.get('alt_name', node['name'].lower())
-            node['path'] = find_node_path(node)
             should_exclude = (
                 node['name'] in BOOT_INIT_NODE_EXCLUDE
                 or node['alt_name'] in BOOT_INIT_NODE_EXCLUDE
-                or node['path']
             )
             if should_exclude:
-                console.print(f"[INFO] ℹ️ Skip node: {node['name']}", style="blue")
+                console.print(f"[INFO] ℹ️ Skip excluded node: {node['name']}", style="blue")
                 nodes_config.remove(node)
                 continue
         except KeyError as e:
@@ -225,32 +216,32 @@ def is_valid_git_repo(path: str) -> bool:
     except Exception as e:
         return False
 
-def find_node_path(config: dict) -> Path:
+def is_node_exists(config: dict) -> bool:
     node_name = config['name']
     node_alt_name = config.get('alt_name', node_name.lower())
-    possible_paths = [
-        Path(config.get('path', COMFYUI_PATH / "custom_nodes" / node_name)),
-        Path(COMFYUI_PATH / "custom_nodes" / node_alt_name)
-    ]
+    possible_paths = { COMFYUI_PATH / "custom_nodes" / name for name in [node_name, node_alt_name] } 
+
     for p in possible_paths:
         if p.exists() and is_valid_git_repo(p):
-            console.print(f"[INFO] ℹ️ {node_name} already exists in path: {p}", style="blue")
-            return p
+            return True
         elif p.is_dir():
             console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {p}", style="yellow")
             shutil.rmtree(p)
         elif p.is_file():
             console.print(f"[WARN] ⚠️ {node_name} invalid, removing: {p}", style="yellow")
             p.unlink()
-    return None
+    return False
 
 def install_node(config: dict, progress: BootProgress = None) -> bool:
     try:
         node_name = config['name']
+        node_url = config['url']
         if node_name in BOOT_INIT_NODE_EXCLUDE:
             console.print(f"[WARN] ⚠️ Cannot install node: {node_name}", style="yellow")
             return False
-        node_url = config['url']
+        if is_node_exists(config):
+            console.print(f"[INFO] ℹ️ {node_name} already exists, skip.", style="blue")
+            return False
         msg = f"[INFO] 📦 Installing node: {node_name}"
         if progress:
             progress.advance(msg=msg, style="blue")
@@ -267,17 +258,23 @@ def install_node(config: dict, progress: BootProgress = None) -> bool:
 def uninstall_node(config: dict, progress: BootProgress = None) -> bool:
     try:
         node_name = config['name']
-        if node_name in BOOT_INIT_NODE_EXCLUDE:
+        node_alt_name = config.get('alt_name', node_name.lower())
+        if node_name in BOOT_INIT_NODE_EXCLUDE or node_alt_name in BOOT_INIT_NODE_EXCLUDE:
             console.print(f"[WARN] ⚠️ Cannot uninstall node: {node_name}", style="yellow")
             return False
-        node_path = Path(config['path'])
+        if not is_node_exists(config):
+            console.print(f"[INFO] ℹ️ {node_name} not found, skip.", style="blue")
+            return False
+        possible_paths = { COMFYUI_PATH / "custom_nodes" / name for name in [node_name, node_alt_name] } 
         msg = f"[INFO] 🗑️ Uninstalling node: {node_name}"
         if progress:
             progress.advance(msg=msg, style="blue")
         else:
             console.print(msg, style="blue")
-        # subprocess.run(["comfy", "node", "uninstall", node_name.lower()], check=True)
-        shutil.rmtree(node_path)
+        for node_path in possible_paths:
+            if node_path.exists():
+                shutil.rmtree(node_path)
+        console.print(f"[INFO] ✅ Uninstalled node: {node_name}", style="green")
         return True
     except Exception as e:
         console.print(f"[ERROR] ❌ Failed to uninstall node {node_name}: {str(e)}", style="red")
@@ -324,12 +321,10 @@ def is_model_exists(config: dict) -> bool:
     model_filename = config['filename']
     if model_path.exists():
         if model_path.is_file():
-            console.print(f"[INFO] ℹ️ {model_filename} already exists in path: {model_path} ", style="blue")
             return True
         else:
             console.print(f"[WARN] ⚠️ {model_filename} invalid, removing: {model_path}", style="yellow")
             shutil.rmtree(model_path)
-    console.print(f"[INFO] ℹ️ {model_filename} not found in path: {model_path}", style="blue")
     return False
 
 def download_model(config: dict, progress: BootProgress = None) -> bool:
@@ -337,6 +332,9 @@ def download_model(config: dict, progress: BootProgress = None) -> bool:
         model_url = config['url']
         model_dir = config['dir']
         model_filename = config['filename']
+        if is_model_exists(config):
+            console.print(f"[INFO] ℹ️ {model_filename} already exists in {model_dir}, skip.", style="blue")
+            return False
         msg = f"[INFO] ⬇️ Downloading model: {model_filename} -> {model_dir}"
         if progress:
             progress.advance(msg=msg, style="blue")
@@ -365,6 +363,9 @@ def remove_model(config: dict, progress: BootProgress = None) -> bool:
     try:
         model_path = Path(config['path'])
         model_filename = config['filename']
+        if not is_model_exists(config):
+            console.print(f"[INFO] ℹ️ {model_filename} not found in path: {model_path}, skip.", style="blue")
+            return False
         msg = f"[INFO] 🗑️ Removing model: {model_filename}"
         if progress:
             progress.advance(msg=msg, style="blue")
