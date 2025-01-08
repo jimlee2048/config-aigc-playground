@@ -11,21 +11,6 @@ import giturlparse
 from comfy_cli.config_manager import ConfigManager
 import comfy_cli.constants as cli_constants
 from rich.console import Console
-console = Console()
-
-# Environment variables
-HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
-CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
-COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
-COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
-BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
-BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
-BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
-BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
-BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
-BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
-BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
-BOOT_INIT_NODE_EXCLUDE = ["ComfyUI-Manager", "comfyui-manager"] 
 
 class BootProgress:
     def __init__(self):
@@ -457,6 +442,22 @@ def exec_script(path: str) -> bool:
         return False
 
 if __name__ == '__main__':
+    console = Console()
+
+    # Environment variables
+    HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
+    CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
+    COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
+    COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
+    BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
+    BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
+    BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
+    BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
+    BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
+    BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
+    BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
+    BOOT_INIT_NODE_EXCLUDE = ["ComfyUI-Manager", "comfyui-manager"] 
+
     # check if comfyui path exists
     if not COMFYUI_PATH.is_dir():
         console.print(f"[ERROR] ❌ Invalid ComfyUI path: {COMFYUI_PATH}", style="red")
