@@ -1,6 +1,7 @@
 services:
-  comfyui-jim-dev:
-    container_name: comfyui-jim-dev
+  comfyui-docker:
+    image: jimlee2048/comfyui-docker:nightly
+    container_name: comfyui-docker
     env_file: .env
     build:
       context: .
