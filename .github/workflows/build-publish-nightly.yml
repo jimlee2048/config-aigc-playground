@@ -1,4 +1,4 @@
-name: Docker Build and Publish 'nightly'
+name: "Docker Build and Publish: nightly"
 
 on: 
   workflow_dispatch:
