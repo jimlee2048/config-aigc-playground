@@ -24,6 +24,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger("boot")
 
+def get_bool_env(var_name: str, default: bool = False) -> bool:
+  value = os.environ.get(var_name)
+  if value is None:
+    return default
+
+  value = value.lower()
+  if value in ("true", "1", "t", "yes", "y"):
+    return True
+  elif value in ("false", "0", "f", "no", "n"):
+    return False
+  else:
+    # raise ValueError(f"Invalid bool value for environment variable '{var_name}': '{value}'")
+    return default
+
 def compile_pattern(pattern_str: str) -> re.Pattern:
     if not pattern_str:
         return None
@@ -475,13 +489,13 @@ if __name__ == '__main__':
     CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
     COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
     COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
-    BOOT_CN_NETWORK = os.environ.get('BOOT_CN_NETWORK', False)
     BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
     BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
     BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
     BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
-    BOOT_INIT_NODE = os.environ.get('BOOT_INIT_NODE', False)
-    BOOT_INIT_MODEL = os.environ.get('BOOT_INIT_MODEL', False)
+    BOOT_CN_NETWORK = get_bool_env('BOOT_CN_NETWORK', False)
+    BOOT_INIT_NODE = get_bool_env('BOOT_INIT_NODE', False)
+    BOOT_INIT_MODEL = get_bool_env('BOOT_INIT_MODEL', False)
     BOOT_INIT_NODE_EXCLUDE = ["ComfyUI-Manager", "comfyui-manager"] 
 
     # check if comfyui path exists
