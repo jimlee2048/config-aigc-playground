@@ -13,6 +13,8 @@ import comfy_cli.constants as cli_constants
 import logging
 from rich.console import Console
 from rich.logging import RichHandler
+from collections import defaultdict
+
 
 console = Console()
 
@@ -151,10 +153,12 @@ class ConfigLoader:
         for file in config_files:
             logger.info(f"      └─ {file}")
         
-        boot_config = {}
+        boot_config = defaultdict(list)
         try:
             for file in config_files:
-                boot_config.update(tomllib.loads(file.read_text()))
+                config = tomllib.loads(file.read_text())
+                for key, value in config.items():
+                    boot_config[key].extend(value)
         except Exception as e:
             logger.error(f"❌ Failed to load boot config: {str(e)}")
             exit(1)
@@ -176,10 +180,10 @@ class ConfigLoader:
             path.parent.mkdir(parents=True, exist_ok=True)
         try:
             path.write_text(json.dumps(config,default=json_default,indent=4))
-            logger.info(f"✅ Config saved to {path}")
+            logger.info(f"✅ Current config saved to {path}")
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to save config: {str(e)}")
+            logger.error(f"❌ Failed to save current config: {str(e)}")
             return False
 
     def load_nodes_config(self, boot_config: dict) -> list[dict]:
