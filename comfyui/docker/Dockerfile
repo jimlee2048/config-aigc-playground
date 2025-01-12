@@ -25,11 +25,11 @@ VOLUME [ "${COMFYUI_PATH}/user", "${COMFYUI_PATH}/output" , "${COMFYUI_PATH}/mod
 
 # master(nightly), or version tag like v0.1.0
 # https://github.com/comfyanonymous/ComfyUI/tags
-ARG COMFYUI_VERSION="master"
+ARG COMFYUI_VERSION=master
 RUN git -C ${COMFYUI_PATH} checkout ${COMFYUI_VERSION}
 # main(nightly), or version tag like v0.1.0
 # https://github.com/ltdrdata/ComfyUI-Manager/tags
-ARG COMFYUI_MN_VERSION="main"
+ARG COMFYUI_MN_VERSION=main
 RUN git -C ${COMFYUI_MN_PATH} checkout ${COMFYUI_MN_VERSION}
 
 # pip config
