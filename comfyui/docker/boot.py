@@ -26,19 +26,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("boot")
 
-def exec_command(command: list[str], cwd: str = None) -> int:
-    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd) as proc:
-        for line in proc.stdout:
-            logger.info(line.strip())
-        for line in proc.stderr:
-            logger.error(line.strip())
-        return proc.returncode
-
 def get_bool_env(var_name: str, default: bool = False) -> bool:
   value = os.environ.get(var_name)
   if value is None:
     return default
-
   value = value.lower()
   if value in ("true", "1", "t", "yes", "y"):
     return True
@@ -61,6 +52,14 @@ def json_default(obj):
     if isinstance(obj, Path):
         return str(obj)
     raise TypeError
+
+def exec_command(command: list[str], cwd: str = None) -> int:
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd) as proc:
+        for line in proc.stdout:
+            logger.info(line.strip())
+        for line in proc.stderr:
+            logger.error(line.strip())
+        return proc.returncode
 
 def exec_script(path: str) -> bool:
     script = Path(path)
@@ -169,7 +168,7 @@ class ConfigLoader:
 
         logger.info(f"📄 Found {len(config_files)} config files:")
         for file in config_files:
-            logger.info(f"      └─ {file}")
+            logger.info(f"└─ {file}")
         
         boot_config = defaultdict(list)
         try:
@@ -348,7 +347,7 @@ class NodeManager:
             install_count = len(install_nodes)
             logger.info(f"📦 Installing {install_count} nodes:")
             for node in install_nodes:
-                logger.info(f"      └─ {node['url']}")
+                logger.info(f"└─ {node['url']}")
             self.progress.start(install_count)
             for node in install_nodes:
                 self.install_node(node)
@@ -356,7 +355,7 @@ class NodeManager:
             uninstall_count = len(uninstall_nodes)
             logger.info(f"🗑️ Uninstalling {uninstall_count} nodes:")
             for node in uninstall_nodes:
-                logger.info(f"      └─ {node['name']}")
+                logger.info(f"└─ {node['name']}")
             self.progress.start(uninstall_count)
             for node in uninstall_nodes:
                 self.uninstall_node(node)
@@ -451,7 +450,7 @@ class ModelManager:
             download_count = len(models_to_download)
             logger.info(f"⬇️ Downloading {download_count} models:")
             for model in models_to_download:
-                logger.info(f"      └─ {model['filename']}")
+                logger.info(f"└─ {model['filename']}")
             self.progress.start(download_count)
             for model in models_to_download:
                 self.download_model(model)
@@ -459,7 +458,7 @@ class ModelManager:
             move_count = len(models_to_move)
             logger.info(f"📦 Moving {move_count} models:")
             for model in models_to_move:
-                logger.info(f"      └─ {model['src']} -> {model['dst']}")
+                logger.info(f"└─ {model['src']} -> {model['dst']}")
             self.progress.start(move_count)
             for file in models_to_move:
                 self.move_model(file['src'], file['dst'])
@@ -467,7 +466,7 @@ class ModelManager:
             remove_count = len(models_to_remove)
             logger.info(f"🗑️ Removing {remove_count} models:")
             for model in models_to_remove:
-                logger.info(f"      └─ {model['filename']}")
+                logger.info(f"└─ {model['filename']}")
             self.progress.start(remove_count)
             for model in models_to_remove:
                 self.remove_model(model)
