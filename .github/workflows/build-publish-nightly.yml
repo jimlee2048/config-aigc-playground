@@ -49,4 +49,4 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            COMFYUI_VERSION="master"
+            COMFYUI_VERSION=master
