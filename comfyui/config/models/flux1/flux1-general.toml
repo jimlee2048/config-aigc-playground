@@ -6,7 +6,7 @@ filename = "ae.safetensors"
 
 # TAEF1 Decoder
 [[models]]
-url = "https://github.com/madebyollin/taesd/resolve/main/taef1_decoder.pth"
+url = "https://github.com/madebyollin/taesd/raw/refs/heads/main/taef1_decoder.pth"
 dir = "models/vae_approx"
 filename = "taef1_decoder.pth"
 

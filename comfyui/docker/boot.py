@@ -22,9 +22,17 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True, show_path=False, console=console,)]
+    handlers=[RichHandler(console=console, show_path=False)]
 )
 logger = logging.getLogger("boot")
+
+def exec_command(command: list[str], cwd: str = None) -> int:
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd) as proc:
+        for line in proc.stdout:
+            logger.info(line.strip())
+        for line in proc.stderr:
+            logger.error(line.strip())
+        return proc.returncode
 
 def get_bool_env(var_name: str, default: bool = False) -> bool:
   value = os.environ.get(var_name)
@@ -61,10 +69,7 @@ def exec_script(path: str) -> bool:
         return False
     try:
         logger.info(f"🛠️ Executing: {path}")
-        result = subprocess.run(str(script), shell=True, capture_output=True, text=True)
-        if result.returncode != 0:
-            logger.error(f"❌ Script failed: {path}\n{result.stderr}")
-            return False
+        exec_command(["bash", str(script)])
         logger.info(f"✅ Script completed: {path}")
         return True
     except Exception as e:
@@ -75,6 +80,9 @@ class BootProgress:
     def __init__(self):
         self.total_steps = 0
         self.current_step = 0
+        self.log_level_info = "info"
+        self.log_level_warning = "warning"
+        self.log_level_error = "error"
 
     def start(self, total_steps: int):
         self.total_steps = total_steps
@@ -83,16 +91,26 @@ class BootProgress:
     def advance(self, msg: str = None, style: str = None):
         self.current_step += 1
         if msg:
-            self.print(msg, style)
+            self.log_progress(msg, style)
 
-    def print(self, msg: str = None, style: str = None):
+    def log_progress(self, msg: str = None, style: str = None):
         overall_progress = f"[{self.current_step}/{self.total_steps}]"
-        if msg:
+        if msg is None:
+            logger.info(f"{overall_progress}")
+            return
+        if style == self.log_level_info:
+            logger.info(f"{overall_progress}: {msg}")
+        elif style == self.log_level_warning:
+            logger.warning(f"{overall_progress}: {msg}")
+        elif style == self.log_level_error:
+            logger.error(f"{overall_progress}: {msg}")
+        else:
             logger.info(f"{overall_progress}: {msg}")
 
 class ConfigLoader:
     def __init__(self, config_path: Path):
         self.config_path = config_path
+        self.node_exclude = ["ComfyUI-Manager", "comfyui-manager"]
 
     def _drop_duplicates_config(self, config: list[dict], cond_key: list[str]) -> tuple[list[dict], int]:
         unique_items = []
@@ -202,11 +220,11 @@ class ConfigLoader:
                 node['name'] = node.get('name', node_repo.name)
                 node['alt_name'] = node.get('alt_name', node['name'].lower())
                 should_exclude = (
-                    node['name'] in BOOT_INIT_NODE_EXCLUDE
-                    or node['alt_name'] in BOOT_INIT_NODE_EXCLUDE
+                    node['name'] in self.node_exclude
+                    or node['alt_name'] in self.node_exclude
                 )
                 if should_exclude:
-                    logger.info(f"ℹ️ Skip excluded node: {node['name']}")
+                    logger.warning(f"⚠️ Skip excluded node: {node['name']}")
                     nodes_config.remove(node)
                     continue
             except KeyError as e:
@@ -245,6 +263,7 @@ class NodeManager:
     def __init__(self, comfyui_path: Path):
         self.comfyui_path = comfyui_path
         self.progress = BootProgress()
+        self.node_exclude = ["ComfyUI-Manager", "comfyui-manager"]
 
     def _is_valid_git_repo(self, path: str) -> bool:        
         try:
@@ -273,15 +292,14 @@ class NodeManager:
         try:
             node_name = config['name']
             node_url = config['url']
-            if node_name in BOOT_INIT_NODE_EXCLUDE:
-                logger.warning(f"⚠️ Cannot install node: {node_name}")
+            if node_name in self.node_exclude:
+                self.progress.advance(msg=f"⚠️ Cannot install node: {node_name}", style="warning")
                 return False
             if self.is_node_exists(config):
-                logger.info(f"ℹ️ {node_name} already exists, skip.")
+                self.progress.advance(msg=f"ℹ️ {node_name} already exists, skip.", style="info")
                 return False
-            msg = f"📦 Installing node: {node_name}"
-            self.progress.advance(msg=msg)
-            subprocess.run(["comfy", "node", "install", node_url], check=True)
+            self.progress.advance(msg=f"📦 Installing node: {node_name}", style="info")
+            exec_command(["python", str(COMFYUI_MN_PATH / "cm-cli.py"), "install", node_url])
             if 'script' in config:
                 exec_script(config['script'])
             return True
@@ -293,15 +311,14 @@ class NodeManager:
         try:
             node_name = config['name']
             node_alt_name = config.get('alt_name', node_name.lower())
-            if node_name in BOOT_INIT_NODE_EXCLUDE or node_alt_name in BOOT_INIT_NODE_EXCLUDE:
-                logger.warning(f"⚠️ Cannot uninstall node: {node_name}")
+            if node_name in self.node_exclude or node_alt_name in self.node_exclude:
+                self.progress.advance(msg=f"⚠️ Cannot uninstall node: {node_name}", style="warning")
                 return False
             if not self.is_node_exists(config):
-                logger.info(f"ℹ️ {node_name} not found, skip.")
+                self.progress.advance(msg=f"ℹ️ {node_name} not found, skip.", style="info")
                 return False
-            possible_paths = { self.comfyui_path / "custom_nodes" / name for name in [node_name, node_alt_name] } 
-            msg = f"🗑️ Uninstalling node: {node_name}"
-            self.progress.advance(msg=msg)
+            possible_paths = { self.comfyui_path / "custom_nodes" / name for name in [node_name, node_alt_name] }
+            self.progress.advance(msg=f"🗑️ Uninstalling node: {node_name}", style="info")
             for node_path in possible_paths:
                 if node_path.exists():
                     shutil.rmtree(node_path)
@@ -367,11 +384,10 @@ class ModelManager:
             model_dir = config['dir']
             model_filename = config['filename']
             if self.is_model_exists(config):
-                logger.info(f"ℹ️ {model_filename} already exists in {model_dir}, skip.")
+                self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}, skip.", style="info")
                 return False
-            msg = f"⬇️ Downloading model: {model_filename} -> {model_dir}"
-            self.progress.advance(msg=msg)
-            subprocess.run(["comfy", "model", "download", "--url", model_url, "--relative-path", model_dir, "--filename", model_filename], check=True)
+            self.progress.advance(msg=f"⬇️ Downloading model: {model_filename} -> {model_dir}", style="info")
+            exec_command(["comfy", "model", "download", "--url", model_url, "--relative-path", model_dir, "--filename", model_filename])
             return True
         except Exception as e:
             logger.error(f"❌ Failed to download model {model_filename}: {str(e)}")
@@ -379,8 +395,7 @@ class ModelManager:
 
     def move_model(self, src: Path, dst: Path) -> bool:
         try:
-            msg = f"📦 Moving: {src} -> {dst}"
-            self.progress.advance(msg=msg)
+            self.progress.advance(msg=f"📦 Moving: {src} -> {dst}", style="info")
             src.rename(dst)
             return True
         except Exception as e:
@@ -392,10 +407,9 @@ class ModelManager:
             model_path = Path(config['path'])
             model_filename = config['filename']
             if not self.is_model_exists(config):
-                logger.info(f"ℹ️ {model_filename} not found in path: {model_path}, skip.")
+                self.progress.advance(msg=f"ℹ️ {model_filename} not found in path: {model_path}, skip.", style="info")
                 return False
-            msg = f"🗑️ Removing model: {model_filename}"
-            self.progress.advance(msg=msg)
+            self.progress.advance(msg=f"🗑️ Removing model: {model_filename}", style="info")
             model_path.unlink()
             logger.info(f"✅ Removed model: {model_filename}")
             return True
@@ -493,6 +507,7 @@ if __name__ == '__main__':
     CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
     COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
     COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
+    COMFYUI_MN_PATH = Path(os.environ.get('COMFYUI_MN_PATH', COMFYUI_PATH / "custom_nodes" / "comfyui-manager"))
     BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
     BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
     BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
@@ -500,7 +515,6 @@ if __name__ == '__main__':
     BOOT_CN_NETWORK = get_bool_env('BOOT_CN_NETWORK', False)
     BOOT_INIT_NODE = get_bool_env('BOOT_INIT_NODE', False)
     BOOT_INIT_MODEL = get_bool_env('BOOT_INIT_MODEL', False)
-    BOOT_INIT_NODE_EXCLUDE = ["ComfyUI-Manager", "comfyui-manager"] 
 
     # check if comfyui path exists
     if not COMFYUI_PATH.is_dir():

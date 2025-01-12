@@ -3,7 +3,7 @@ FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 ENV WORKDIR=/workspace
 WORKDIR ${WORKDIR}
 ENV COMFYUI_PATH=${WORKDIR}/ComfyUI
-ENV COMFYUI_MN_PATH=${COMFYUI_PATH}/custom_nodes/ComfyUI-Manager
+ENV COMFYUI_MN_PATH=${COMFYUI_PATH}/custom_nodes/comfyui-manager
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -63,10 +63,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # install comfy-cli
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install comfy-cli wget giturlparse \
+    pip install comfy-cli wget giturlparse aria2p \
     && comfy --skip-prompt tracking disable \
     && comfy set-default ${COMFYUI_PATH} \
-    && comfy node save-snapshot
+    && python ${COMFYUI_MN_PATH}/cm-cli.py save-snapshot
 
 COPY boot.py .
 ENV BOOT_CN_NETWORK=false
