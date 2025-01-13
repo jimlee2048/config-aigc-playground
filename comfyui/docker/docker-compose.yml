@@ -17,6 +17,8 @@ services:
       ## https://github.com/comfyanonymous/ComfyUI/blob/master/extra_model_paths.yaml.example
       # - ./extra_model_paths.yaml:/workspace/ComfyUI/extra_model_paths.yaml
       # - /path/to/sd-webui-a1111/models:/workspace/external_models/sd-webui-a1111
+      ## optional: external custom_nodes folder
+      # - /path/to/a_custom_nodes:/workspace/ComfyUI/custom_nodes/a_custom_nodes
     security_opt:
       - "label=type:nvidia_container_t"
     deploy:

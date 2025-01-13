@@ -54,11 +54,10 @@ def json_default(obj):
     raise TypeError
 
 def exec_command(command: list[str], cwd: str = None) -> int:
-    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd) as proc:
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=cwd) as proc:
         for line in proc.stdout:
             logger.info(line.strip())
-        for line in proc.stderr:
-            logger.error(line.strip())
+        proc.wait()
         if proc.returncode != 0:
             raise subprocess.CalledProcessError(proc.returncode, command)
         return proc.returncode
