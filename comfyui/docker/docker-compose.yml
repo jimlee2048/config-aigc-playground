@@ -13,6 +13,9 @@ services:
       - ./volume/output:/workspace/ComfyUI/output
       - ./volume/models:/workspace/ComfyUI/models
       - ../config:/workspace/boot_config
+      ## optional: extra model paths
+      ## https://github.com/comfyanonymous/ComfyUI/blob/master/extra_model_paths.yaml.example
+      # - ./extra_model_paths.yaml:/workspace/ComfyUI/extra_model_paths.yaml
       # - /path/to/sd-webui-a1111/models:/workspace/external_models/sd-webui-a1111
     security_opt:
       - "label=type:nvidia_container_t"
