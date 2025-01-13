@@ -60,7 +60,7 @@ def exec_command(command: list[str], cwd: str = None) -> int:
         for line in proc.stderr:
             logger.error(line.strip())
         if proc.returncode != 0:
-            raise subprocess.CalledProcessError(proc.returncode)
+            raise subprocess.CalledProcessError(proc.returncode, command)
         return proc.returncode
 
 def exec_script(path: str) -> bool:
