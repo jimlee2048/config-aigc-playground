@@ -16,7 +16,8 @@ a1111:
                   ESRGAN
                   RealESRGAN
                   SwinIR
-    embeddings: ../embeddings
+    # recommended to make a symlink for embeddings
+    embeddings: embeddings
     hypernetworks: hypernetworks
     controlnet: ControlNet
 
