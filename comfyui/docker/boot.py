@@ -59,6 +59,8 @@ def exec_command(command: list[str], cwd: str = None) -> int:
             logger.info(line.strip())
         for line in proc.stderr:
             logger.error(line.strip())
+        if proc.returncode != 0:
+            raise subprocess.CalledProcessError(proc.returncode)
         return proc.returncode
 
 def exec_script(path: str) -> bool:
@@ -106,23 +108,30 @@ class BootProgress:
         else:
             logger.info(f"{overall_progress}: {msg}")
 
-class ConfigLoader:
-    def __init__(self, config_path: Path):
-        self.config_path = config_path
+class BootConfigManager:
+    def __init__(self, config_dir: Path):
+        self.config_dir = config_dir
         self.node_exclude = ["ComfyUI-Manager", "comfyui-manager"]
+        self.current_config = self.load_boot_config()
+        self.prev_config = self.load_prev_config(BOOT_CONFIG_PREV_PATH)
+        self.current_nodes = self.load_nodes_config(self.current_config)
+        self.current_models = self.load_models_config(self.current_config)
+        self.prev_nodes = self.load_nodes_config(self.prev_config)
+        self.prev_models = self.load_models_config(self.prev_config)
 
-    def _drop_duplicates_config(self, config: list[dict], cond_key: list[str]) -> tuple[list[dict], int]:
+
+    def _drop_duplicates_config(self, config: list[dict], cond_key: list[str]) -> tuple[list[dict], list[dict], int]:
         unique_items = []
+        duplicate_items = []
         unique_kv_tracker = set()
         for item in config:
             unique_kv = tuple(item[key] for key in cond_key)
             if unique_kv not in unique_kv_tracker:
                 unique_items.append(item)
                 unique_kv_tracker.add(unique_kv)
-        duplicates_count = len(config) - len(unique_items)
-        if duplicates_count:
-            logger.warning(f"⚠️ Found {duplicates_count} duplicate items")
-        return unique_items, duplicates_count
+            else:
+                duplicate_items.append(item)
+        return unique_items, duplicate_items
 
     def _preprocess_url(self, url: str) -> str:
         parsed_url = urllib.parse.urlparse(url)
@@ -140,17 +149,17 @@ class ConfigLoader:
         return url
 
     def load_boot_config(self) -> dict:
-        logger.info(f"📂 Loading boot config from {self.config_path}")
+        logger.info(f"📂 Loading boot config from {self.config_dir}")
 
-        config_path = Path(self.config_path)
-        if not config_path.is_dir():
-            if config_path.is_file():
+        config_dir = Path(self.config_dir)
+        if not config_dir.is_dir():
+            if config_dir.is_file():
                 logger.warning(f"⚠️ Invalid boot config detected, removing")
-                shutil.rmtree(config_path)
+                shutil.rmtree(config_dir)
             logger.info(f"ℹ️ No boot config found, using default settings")
             return {}
         
-        config_files = list(config_path.rglob("*.toml"))
+        config_files = list(config_dir.rglob("*.toml"))
         
         if BOOT_CONFIG_INCLUDE or BOOT_CONFIG_EXCLUDE:
             include_pattern = compile_pattern(BOOT_CONFIG_INCLUDE)
@@ -231,9 +240,11 @@ class ConfigLoader:
                 continue
 
         # drop duplicates
-        nodes_config, duplicates_count = self._drop_duplicates_config(nodes_config, ['name'])
-        if duplicates_count:
-            logger.warning(f"⚠️ Found {duplicates_count} duplicate nodes")
+        nodes_config, duplicates = self._drop_duplicates_config(nodes_config, ['name'])
+        if duplicates:
+            logger.warning(f"⚠️ Found {len(duplicates)} duplicate nodes:")
+            for node in duplicates:
+                logger.warning(f"└─ {node['name']}")
 
         return nodes_config
 
@@ -251,9 +262,11 @@ class ConfigLoader:
                 continue
 
         # drop duplicates
-        models_config, duplicates_count = self._drop_duplicates_config(models_config, ['path'])
-        if duplicates_count:
-            logger.warning(f"⚠️ Found {duplicates_count} duplicate models")
+        models_config, duplicates = self._drop_duplicates_config(models_config, ['path'])
+        if duplicates:
+            logger.warning(f"⚠️ Found {len(duplicates)} duplicate models:")
+            for model in duplicates:
+                logger.warning(f"└─ {model['filename']}")
 
         return models_config
 
@@ -263,6 +276,7 @@ class NodeManager:
         self.comfyui_path = comfyui_path
         self.progress = BootProgress()
         self.node_exclude = ["ComfyUI-Manager", "comfyui-manager"]
+        self.failed_list = []
 
     def _is_valid_git_repo(self, path: str) -> bool:        
         try:
@@ -292,11 +306,11 @@ class NodeManager:
             node_name = config['name']
             node_url = config['url']
             if node_name in self.node_exclude:
-                self.progress.advance(msg=f"⚠️ Cannot install node: {node_name}", style="warning")
+                self.progress.advance(msg=f"⚠️ Not allowed to install node: {node_name}", style="warning")
                 return False
             if self.is_node_exists(config):
                 self.progress.advance(msg=f"ℹ️ {node_name} already exists, skip.", style="info")
-                return False
+                return True
             self.progress.advance(msg=f"📦 Installing node: {node_name}", style="info")
             exec_command(["python", str(COMFYUI_MN_PATH / "cm-cli.py"), "install", node_url])
             if 'script' in config:
@@ -311,11 +325,11 @@ class NodeManager:
             node_name = config['name']
             node_alt_name = config.get('alt_name', node_name.lower())
             if node_name in self.node_exclude or node_alt_name in self.node_exclude:
-                self.progress.advance(msg=f"⚠️ Cannot uninstall node: {node_name}", style="warning")
+                self.progress.advance(msg=f"⚠️ Not allowed to uninstall node: {node_name}", style="warning")
                 return False
             if not self.is_node_exists(config):
                 self.progress.advance(msg=f"ℹ️ {node_name} not found, skip.", style="info")
-                return False
+                return True
             possible_paths = { self.comfyui_path / "custom_nodes" / name for name in [node_name, node_alt_name] }
             self.progress.advance(msg=f"🗑️ Uninstalling node: {node_name}", style="info")
             for node_path in possible_paths:
@@ -328,7 +342,6 @@ class NodeManager:
             return False
 
     def init_nodes(self, current_config: list[dict], prev_config: list[dict] = None) -> bool:
-
         if not current_config:
             logger.info(f"📦 No nodes in config")
             return False
@@ -350,7 +363,8 @@ class NodeManager:
                 logger.info(f"└─ {node['url']}")
             self.progress.start(install_count)
             for node in install_nodes:
-                self.install_node(node)
+                if not self.install_node(node):
+                    self.failed_list.append(node)
         if uninstall_nodes:
             uninstall_count = len(uninstall_nodes)
             logger.info(f"🗑️ Uninstalling {uninstall_count} nodes:")
@@ -358,13 +372,20 @@ class NodeManager:
                 logger.info(f"└─ {node['name']}")
             self.progress.start(uninstall_count)
             for node in uninstall_nodes:
-                self.uninstall_node(node)
+                if not self.uninstall_node(node):
+                    self.failed_list.append(node)
+        if self.failed_list:
+            logger.error(f"❌ Failed to process {len(self.failed_list)} nodes:")
+            for node in self.failed_list:
+                logger.error(f"└─ {node['name']}")
+            return False
         return True
 
 class ModelManager:
     def __init__(self, comfyui_path: Path):
         self.comfyui_path = comfyui_path
         self.progress = BootProgress()
+        self.failed_list = []
 
     def is_model_exists(self, config: dict) -> bool:
         model_path = Path(config['path'])
@@ -384,7 +405,7 @@ class ModelManager:
             model_filename = config['filename']
             if self.is_model_exists(config):
                 self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}, skip.", style="info")
-                return False
+                return True
             self.progress.advance(msg=f"⬇️ Downloading model: {model_filename} -> {model_dir}", style="info")
             exec_command(["comfy", "model", "download", "--url", model_url, "--relative-path", model_dir, "--filename", model_filename])
             return True
@@ -407,7 +428,7 @@ class ModelManager:
             model_filename = config['filename']
             if not self.is_model_exists(config):
                 self.progress.advance(msg=f"ℹ️ {model_filename} not found in path: {model_path}, skip.", style="info")
-                return False
+                return True
             self.progress.advance(msg=f"🗑️ Removing model: {model_filename}", style="info")
             model_path.unlink()
             logger.info(f"✅ Removed model: {model_filename}")
@@ -416,19 +437,17 @@ class ModelManager:
             logger.error(f"❌ Failed to remove model {model_filename}: {str(e)}")
             return False
 
-    def init_models(self, current_config: list, prev_config: list = None):
+    def init_models(self, current_config: list, prev_config: list = None) -> bool:
         if not current_config:
             logger.info(f"📦 No models in config")
             return False
         
+        models_to_download = []
+        models_to_move = []
+        models_to_remove = []
         if not prev_config:
             models_to_download = current_config
-            models_to_move = []
-            models_to_remove = []
-
         else:
-            models_to_download = []
-            models_to_move = []
             for model in current_config:
                 if model not in prev_config:
                     models_to_download.append(model)
@@ -438,11 +457,10 @@ class ModelManager:
                     current_path = Path(model['path'])
                     if current_path != prev_path:
                         models_to_move.append({"src": prev_path, "dst": current_path})
-            models_to_remove = []
             for prev_model in prev_config:
                 if not any(model['url'] == prev_model['url'] for model in current_config):
                     models_to_remove.append(prev_model)
-        
+
         if not models_to_download and not models_to_move and not models_to_remove:
             logger.info(f"ℹ️ No changes in models")
             return False
@@ -453,15 +471,17 @@ class ModelManager:
                 logger.info(f"└─ {model['filename']}")
             self.progress.start(download_count)
             for model in models_to_download:
-                self.download_model(model)
+                if not self.download_model(model):
+                    self.failed_list.append(model)
         if models_to_move:
             move_count = len(models_to_move)
             logger.info(f"📦 Moving {move_count} models:")
             for model in models_to_move:
                 logger.info(f"└─ {model['src']} -> {model['dst']}")
             self.progress.start(move_count)
-            for file in models_to_move:
-                self.move_model(file['src'], file['dst'])
+            for model in models_to_move:
+                if not self.move_model(model['src'], model['dst']):
+                    self.failed_list.append(model)
         if models_to_remove:
             remove_count = len(models_to_remove)
             logger.info(f"🗑️ Removing {remove_count} models:")
@@ -469,28 +489,39 @@ class ModelManager:
                 logger.info(f"└─ {model['filename']}")
             self.progress.start(remove_count)
             for model in models_to_remove:
-                self.remove_model(model)
+                if not self.remove_model(model):
+                    self.failed_list.append(model)
+        if self.failed_list:
+            logger.error(f"❌ Failed to process {len(self.failed_list)} models:")
+            for model in self.failed_list:
+                logger.error(f"└─ {model['filename']}")
+            return False
         return True
 
 
 class ComfyUIInitializer:
     def __init__(self):
-        self.config_loader = ConfigLoader(BOOT_CONFIG_DIR)
+        self.config_loader = BootConfigManager(BOOT_CONFIG_DIR)
+        self.current_config = self.config_loader.current_config
+        self.prev_config = self.config_loader.prev_config
+        self.current_nodes = self.config_loader.current_nodes
+        self.current_models = self.config_loader.current_models
+        self.prev_nodes = self.config_loader.prev_nodes
+        self.prev_models = self.config_loader.prev_models
         self.node_manager = NodeManager(COMFYUI_PATH)
         self.model_manager = ModelManager(COMFYUI_PATH)
 
     def run(self):
-        current_boot_config = self.config_loader.load_boot_config()
-        prev_boot_config = self.config_loader.load_prev_config(BOOT_CONFIG_PREV_PATH)
-        if current_boot_config and BOOT_INIT_NODE:
-            current_nodes = self.config_loader.load_nodes_config(current_boot_config)
-            prev_nodes = prev_boot_config.get('custom_nodes', [])
-            self.node_manager.init_nodes(current_nodes, prev_nodes)
-        if current_boot_config and BOOT_INIT_MODEL:
-            current_models = self.config_loader.load_models_config(current_boot_config)
-            prev_models = prev_boot_config.get('models', [])
-            self.model_manager.init_models(current_models, prev_models)
-        self.config_loader.write_config_cache(BOOT_CONFIG_PREV_PATH, current_boot_config)
+        # init nodes and models
+        failed_config = defaultdict(list)
+        if self.current_config and BOOT_INIT_NODE:
+            self.node_manager.init_nodes(self.current_nodes, self.prev_nodes)
+            failed_config['nodes'] = self.node_manager.failed_list
+        if self.current_config and BOOT_INIT_MODEL:
+            self.model_manager.init_models(self.current_models, self.prev_models)
+            failed_config['models'] = self.model_manager.failed_list
+        self.config_loader.write_config_cache(BOOT_CONFIG_PREV_PATH, {k: v for k, v in self.current_config.items() if k not in failed_config})
+        # launch comfyui
         logger.info(f"🚀 Launching ComfyUI...")
         launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
         launch_args_str = " ".join(launch_args_list).strip()
