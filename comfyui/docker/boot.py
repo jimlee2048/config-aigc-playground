@@ -9,8 +9,6 @@ import urllib.parse
 import json
 import git
 import giturlparse
-from comfy_cli.config_manager import ConfigManager
-import comfy_cli.constants as cli_constants
 import logging
 from rich.console import Console
 from rich.logging import RichHandler
@@ -411,6 +409,8 @@ class ModelManager:
             ], check=True)
             # sleep to ensure aria2c is ready
             time.sleep(1)
+            # purge all completed, removed or failed downloads from the queue
+            self.aria2.purge()
         except Exception as e:
             logger.error(f"❌ Failed to start aria2c: {str(e)}")
 
@@ -462,9 +462,10 @@ class ModelManager:
     
         self.progress.advance(msg=f"⬇️ Downloading: {model_filename} -> {model_dir}", style="info")
         headers = defaultdict(str)
+        # TODO: fix huggingface auth
+        # https://github.com/huggingface/huggingface_hub/blob/b2c9a148d465b43ab90fab6e4ebcbbf5a9df27d4/src/huggingface_hub/utils/_headers.py#L45
         if self._is_huggingface_url(model_url) and HF_API_TOKEN:
-            headers['Content-Type'] = "application/json"
-            headers['Authorization'] = f"Bearer {HF_API_TOKEN}"
+            headers['authorization'] = f"Bearer {HF_API_TOKEN}"
         if self._is_civilai_url(model_url) and CIVITAI_API_TOKEN:
             headers['Content-Type'] = "application/json"
             headers['Authorization'] = f"Bearer {CIVITAI_API_TOKEN}"
@@ -602,9 +603,6 @@ class ComfyUIInitializer:
         # launch comfyui
         logger.info(f"🚀 Launching ComfyUI...")
         launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
-        launch_args_str = " ".join(launch_args_list).strip()
-        cli_config_manager.set(cli_constants.CONFIG_KEY_DEFAULT_LAUNCH_EXTRAS, launch_args_str)
-        subprocess.run(["comfy", "env"], check=True)
         subprocess.run(["comfy", "launch", "--"] + launch_args_list, check=True)
 
 if __name__ == '__main__':
@@ -640,12 +638,6 @@ if __name__ == '__main__':
             logger.warning(f"⚠️ HF_API_TOKEN will be sent to hf-mirror.com")
         if CIVITAI_API_TOKEN:
             logger.warning(f"⚠️ CIVITAIAPI_TOKEN will be sent to civitai.work")
-
-    cli_config_manager = ConfigManager()
-    if HF_API_TOKEN:
-        cli_config_manager.set(cli_constants.HF_API_TOKEN_KEY, HF_API_TOKEN)
-    if CIVITAI_API_TOKEN:
-        cli_config_manager.set(cli_constants.CIVITAI_API_TOKEN_KEY, CIVITAI_API_TOKEN)
 
     app = ComfyUIInitializer(BOOT_CONFIG_DIR, COMFYUI_PATH)
     logger.info(f"Initializing ComfyUI...")

@@ -63,9 +63,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # install comfy-cli
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install comfy-cli wget giturlparse aria2p \
-    && comfy --skip-prompt tracking disable \
-    && comfy set-default ${COMFYUI_PATH} \
+    pip install wget giturlparse aria2p \
     && python ${COMFYUI_MN_PATH}/cm-cli.py save-snapshot
 
 COPY boot.py .
