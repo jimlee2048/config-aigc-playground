@@ -15,35 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_tag: ${{ steps.get-latest-release.outputs.tag }}
-      is_new_release: ${{ steps.check-release.outputs.is_new_release }}
     steps:
       - name: Get latest release
         id: get-latest-release
         run: |
           LATEST_TAG=$(curl -sL https://api.github.com/repos/comfyanonymous/ComfyUI/releases/latest | jq -r .tag_name)
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-
-      - name: Restore cached release tag
-        id: cache-release
-        uses: actions/cache@v3
-        with:
-          path: ~/.release-tag
-          key: release-tag
-
-      - name: Check if new release
-        id: check-release
-        run: |
-          CACHED_TAG=""
-          if [ -f ~/.release-tag ]; then
-            CACHED_TAG=$(cat ~/.release-tag)
-          fi
-          
-          if [ "$CACHED_TAG" != "${{ steps.get-latest-release.outputs.tag }}" ]; then
-            echo "is_new_release=true" >> $GITHUB_OUTPUT
-            echo "${{ steps.get-latest-release.outputs.tag }}" > ~/.release-tag
-          else
-            echo "is_new_release=false" >> $GITHUB_OUTPUT
-          fi
 
   build-and-push:
     needs: fetch-release
@@ -55,9 +32,6 @@ jobs:
             comfyui_version: master
           - image_tag: latest
             comfyui_version: ${{ needs.fetch-release.outputs.release_tag }}
-    if: |
-      github.job.matrix.image_tag == 'nightly' || 
-      (github.job.matrix.image_tag == 'latest' && needs.fetch-release.outputs.is_new_release == 'true')
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
