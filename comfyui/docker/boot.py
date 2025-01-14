@@ -24,7 +24,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(console=console, show_path=False, level="NOTSET")]
+    handlers=[RichHandler(console=console, show_path=False)]
 )
 logger = logging.getLogger("boot")
 
