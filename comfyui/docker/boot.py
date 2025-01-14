@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import shutil
 import re
@@ -311,7 +312,7 @@ class NodeManager:
                 self.progress.advance(msg=f"ℹ️ {node_name} already exists, skip.", style="info")
                 return True
             self.progress.advance(msg=f"📦 Installing node: {node_name}", style="info")
-            exec_command(["python", str(COMFYUI_MN_PATH / "cm-cli.py"), "install", node_url])
+            exec_command([sys.executable, str(COMFYUI_MN_PATH / "cm-cli.py"), "install", node_url])
             if 'script' in config:
                 exec_script(config['script'])
             return True
@@ -411,6 +412,9 @@ class ModelManager:
             time.sleep(1)
             # purge all completed, removed or failed downloads from the queue
             self.aria2.purge()
+            # set os env COMFYUI_MANAGER_ARIA2_SERVER and COMFYUI_MANAGER_ARIA2_SECRET
+            os.environ['COMFYUI_MANAGER_ARIA2_SERVER'] = "http://localhost:6800/jsonrpc"
+            os.environ['COMFYUI_MANAGER_ARIA2_SECRET'] = ""
         except Exception as e:
             logger.error(f"❌ Failed to start aria2c: {str(e)}")
 
@@ -580,6 +584,7 @@ class ModelManager:
 
 class ComfyUIInitializer:
     def __init__(self, config_dir: Path = None, comfyui_path: Path = None):
+        self.comfyui_path = comfyui_path
         self.config_loader = BootConfigManager(config_dir)
         self.current_config = self.config_loader.current_config
         self.prev_config = self.config_loader.prev_config
@@ -603,7 +608,7 @@ class ComfyUIInitializer:
         # launch comfyui
         logger.info(f"🚀 Launching ComfyUI...")
         launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
-        subprocess.run(["comfy", "launch", "--"] + launch_args_list, check=True)
+        subprocess.run([sys.executable, str(self.comfyui_path / "main.py")] + launch_args_list, check=False)
 
 if __name__ == '__main__':
     logger.info(f"Starting boot process")
