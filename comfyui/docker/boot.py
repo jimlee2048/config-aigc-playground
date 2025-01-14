@@ -2,9 +2,10 @@ import os
 import subprocess
 import shutil
 import re
+import time
 from pathlib import Path
 import tomllib
-import urllib
+import urllib.parse
 import json
 import git
 import giturlparse
@@ -14,6 +15,7 @@ import logging
 from rich.console import Console
 from rich.logging import RichHandler
 from collections import defaultdict
+import aria2p
 
 
 console = Console()
@@ -22,7 +24,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(console=console, show_path=False)]
+    handlers=[RichHandler(console=console, show_path=False, level="NOTSET")]
 )
 logger = logging.getLogger("boot")
 
@@ -385,11 +387,63 @@ class ModelManager:
         self.comfyui_path = comfyui_path
         self.progress = BootProgress()
         self.failed_list = []
+        self.aria2 = aria2p.API(
+            aria2p.Client(
+                host="http://localhost",
+                port=6800,
+                secret=""
+            )
+        )
+        self._start_aria2c()
+
+    def _start_aria2c(self):
+        try:
+            subprocess.run([
+                "aria2c", 
+                "--daemon=true",
+                "--enable-rpc",
+                "--rpc-listen-port=6800",
+                "--max-concurrent-downloads=1",
+                "--max-connection-per-server=16",
+                "--split=16",
+                "--continue=true",
+                "--disable-ipv6=true",
+            ], check=True)
+            # sleep to ensure aria2c is ready
+            time.sleep(1)
+        except Exception as e:
+            logger.error(f"❌ Failed to start aria2c: {str(e)}")
+
+    def _is_huggingface_url(self, url: str) -> bool:
+        parsed_url = urllib.parse.urlparse(url)
+        return parsed_url.netloc in ["hf.co", "huggingface.co", "huggingface.com", "hf-mirror.com"]
+    
+    def _is_civilai_url(self, url: str) -> bool:
+        parsed_url = urllib.parse.urlparse(url)
+        return parsed_url.netloc in ["civitai.com", "civitai.work"]
 
     def is_model_exists(self, config: dict) -> bool:
         model_path = Path(config['path'])
+        model_dir = model_path.parent
         model_filename = config['filename']
+
+        # remove huggingface cache
+        if (model_dir / ".cache").exists():
+            logger.warning(f"⚠️ Found cache directory: {str(model_dir)}, removing...")
+            shutil.rmtree(model_dir / ".cache")
+
+        # check if previous download cache exists
+        previous_download_cache = model_dir / (model_filename + ".aria2")
+        previous_download_exists = previous_download_cache.exists()
+        if previous_download_exists:
+            logger.warning(f"⚠️ Found previous download cache: {str(previous_download_cache)}, removing...")
+            previous_download_cache.unlink()
+
         if model_path.exists():
+            if previous_download_exists:
+                logger.warning(f"⚠️ {model_filename} download incomplete, removing...")
+                model_path.unlink()
+                return False
             if model_path.is_file():
                 return True
             else:
@@ -398,19 +452,44 @@ class ModelManager:
         return False
 
     def download_model(self, config: dict) -> bool:
-        try:
-            model_url = config['url']
-            model_dir = config['dir']
-            model_filename = config['filename']
-            if self.is_model_exists(config):
-                self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}, skip.", style="info")
-                return True
-            self.progress.advance(msg=f"⬇️ Downloading model: {model_filename} -> {model_dir}", style="info")
-            exec_command(["comfy", "model", "download", "--url", model_url, "--relative-path", model_dir, "--filename", model_filename])
+        model_url = config['url']
+        model_dir = config['dir']
+        model_filename = config['filename']
+
+        if self.is_model_exists(config):
+            self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}, skip.", style="info")
             return True
-        except Exception as e:
-            logger.error(f"❌ Failed to download model {model_filename}: {str(e)}")
-            return False
+    
+        self.progress.advance(msg=f"⬇️ Downloading: {model_filename} -> {model_dir}", style="info")
+        headers = defaultdict(str)
+        if self._is_huggingface_url(model_url) and HF_API_TOKEN:
+            headers['Content-Type'] = "application/json"
+            headers['Authorization'] = f"Bearer {HF_API_TOKEN}"
+        if self._is_civilai_url(model_url) and CIVITAI_API_TOKEN:
+            headers['Content-Type'] = "application/json"
+            headers['Authorization'] = f"Bearer {CIVITAI_API_TOKEN}"
+
+        for attempt in range(1, 4):
+            try:
+                download = self.aria2.add_uris([model_url], {
+                    "dir": str(self.comfyui_path / model_dir),
+                    "out": model_filename,
+                    "header": headers
+                })
+                while not download.is_complete:
+                    download.update()
+                    if download.status == "error":
+                        raise Exception(f"{download.error_message}")
+                    if download.status == "removed":
+                        raise Exception(f"Download was removed")
+                    self.progress.log_progress(f"{model_filename}: {download.progress_string()} | {download.completed_length_string()}/{download.total_length_string()} [{download.eta_string()}, {download.download_speed_string()}]", "info")
+                    time.sleep(1)
+                logger.info(f"✅ Downloaded: {model_filename} -> {model_dir}")
+                return True
+            except Exception as e:
+                logger.warning(f"⚠️ Download attempt {attempt} failed: {str(e)}")
+        logger.error(f"❌ Exceeded max retries: {model_filename} -> {model_dir}")
+        return False
 
     def move_model(self, src: Path, dst: Path) -> bool:
         try:
@@ -499,16 +578,16 @@ class ModelManager:
 
 
 class ComfyUIInitializer:
-    def __init__(self):
-        self.config_loader = BootConfigManager(BOOT_CONFIG_DIR)
+    def __init__(self, config_dir: Path = None, comfyui_path: Path = None):
+        self.config_loader = BootConfigManager(config_dir)
         self.current_config = self.config_loader.current_config
         self.prev_config = self.config_loader.prev_config
         self.current_nodes = self.config_loader.current_nodes
         self.current_models = self.config_loader.current_models
         self.prev_nodes = self.config_loader.prev_nodes
         self.prev_models = self.config_loader.prev_models
-        self.node_manager = NodeManager(COMFYUI_PATH)
-        self.model_manager = ModelManager(COMFYUI_PATH)
+        self.node_manager = NodeManager(comfyui_path)
+        self.model_manager = ModelManager(comfyui_path)
 
     def run(self):
         # init nodes and models
@@ -559,6 +638,8 @@ if __name__ == '__main__':
         os.environ['HF_ENDPOINT'] = "https://hf-mirror.com"
         if HF_API_TOKEN:
             logger.warning(f"⚠️ HF_API_TOKEN will be sent to hf-mirror.com")
+        if CIVITAI_API_TOKEN:
+            logger.warning(f"⚠️ CIVITAIAPI_TOKEN will be sent to civitai.work")
 
     cli_config_manager = ConfigManager()
     if HF_API_TOKEN:
@@ -566,6 +647,6 @@ if __name__ == '__main__':
     if CIVITAI_API_TOKEN:
         cli_config_manager.set(cli_constants.CIVITAI_API_TOKEN_KEY, CIVITAI_API_TOKEN)
 
-    app = ComfyUIInitializer()
+    app = ComfyUIInitializer(BOOT_CONFIG_DIR, COMFYUI_PATH)
     logger.info(f"Initializing ComfyUI...")
     app.run()
