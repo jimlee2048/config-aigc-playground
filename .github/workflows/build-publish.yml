@@ -2,6 +2,13 @@ name: "Docker Build and Publish"
 
 on:
   workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: "Force rebuild ignoring cache"
+        default: true
+        required: true
+        type: boolean
+
   schedule:
     - cron: "0 0 * * *"
   push:
@@ -14,9 +21,9 @@ jobs:
   fetch-upstream:
     runs-on: ubuntu-latest
     outputs:
-      is_new_release: ${{ steps.cache-release-tag.outputs.cache-hit }}
+      is_new_release: ${{ ! steps.cache-release-tag.outputs.cache-hit || inputs.force_rebuild }}
       latest_release_tag: ${{ steps.get-latest-tag.outputs.tag }}
-      is_new_nightly: ${{ steps.cache-nightly-hash.outputs.cache-hit }}
+      is_new_commit: ${{ ! steps.cache-nightly-hash.outputs.cache-hit || inputs.force_rebuild }}
       nightly_commit_hash: ${{ steps.get-nightly-hash.outputs.hash }}
 
     steps:
@@ -69,7 +76,7 @@ jobs:
           images: ${{ vars.DOCKER_USERNAME }}/comfyui-docker
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=ranged,value=${{ needs.fetch-upstream.outputs.latest_release_tag }},enable={{is_default_branch}}
+            type=raw,value=${{ needs.fetch-upstream.outputs.latest_release_tag }},enable={{is_default_branch}}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -99,7 +106,7 @@ jobs:
   build-nightly:
     needs: fetch-upstream
     runs-on: ubuntu-latest
-    if: needs.fetch-upstream.outputs.is_new_nightly == 'true'
+    if: needs.fetch-upstream.outputs.is_new_commit == 'true'
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
