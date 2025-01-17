@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-        ca-certificates git build-essential cmake ninja-build wget curl aria2 ffmpeg libgl1-mesa-dev libopengl0 \
+    ca-certificates git build-essential cmake ninja-build wget curl aria2 ffmpeg libgl1-mesa-dev libopengl0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,11 +26,11 @@ VOLUME [ "${COMFYUI_PATH}/user", "${COMFYUI_PATH}/output" , "${COMFYUI_PATH}/mod
 # master(nightly), or version tag like v0.1.0
 # https://github.com/comfyanonymous/ComfyUI/tags
 ARG COMFYUI_VERSION=master
-RUN git -C ${COMFYUI_PATH} checkout ${COMFYUI_VERSION}
+RUN git -C ${COMFYUI_PATH} reset --hard ${COMFYUI_VERSION}
 # main(nightly), or version tag like v0.1.0
 # https://github.com/ltdrdata/ComfyUI-Manager/tags
 ARG COMFYUI_MN_VERSION=main
-RUN git -C ${COMFYUI_MN_PATH} checkout ${COMFYUI_MN_VERSION}
+RUN git -C ${COMFYUI_MN_PATH} reset --hard ${COMFYUI_MN_VERSION}
 
 # pip config
 # let .pyc files be stored in one place
@@ -41,25 +41,25 @@ ENV PIP_ROOT_USER_ACTION=ignore
 # install comfyui basic requirements
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install \
-        -r ${COMFYUI_PATH}/requirements.txt \
-        -r ${COMFYUI_MN_PATH}/requirements.txt \
-        xformers \
-        --index-url https://download.pytorch.org/whl/cu124 \
-        --extra-index-url https://pypi.org/simple
+    -r ${COMFYUI_PATH}/requirements.txt \
+    -r ${COMFYUI_MN_PATH}/requirements.txt \
+    xformers \
+    --index-url https://download.pytorch.org/whl/cu124 \
+    --extra-index-url https://pypi.org/simple
 
 ENV PIP_USER=true
 ENV PATH="${PATH}:/root/.local/bin"
-        
+
 # extra pip packages, if you don't mind image size
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install \
-        "numpy<2" \
-        pyopengl pyopengl-accelerate \
-        onnx onnxruntime onnxruntime-gpu \
-        transformers \
-        # i hate this stupid solution to avoid possible conflict :(
-        opencv-python opencv-python-headless opencv-contrib-python opencv-contrib-python-headless \
-        huggingface_hub
+    "numpy<2" \
+    pyopengl pyopengl-accelerate \
+    onnx onnxruntime onnxruntime-gpu \
+    transformers \
+    # i hate this stupid solution to avoid possible conflict :(
+    opencv-python opencv-python-headless opencv-contrib-python opencv-contrib-python-headless \
+    huggingface_hub
 
 # install comfy-cli
 RUN --mount=type=cache,target=/root/.cache/pip \
