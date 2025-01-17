@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       force_rebuild:
-        description: "Force rebuild ignoring cache"
+        description: "Force rebuild"
         default: true
         required: true
         type: boolean
