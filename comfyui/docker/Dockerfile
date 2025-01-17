@@ -50,7 +50,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 ENV PIP_USER=true
 ENV PATH="${PATH}:/root/.local/bin"
 
-# extra pip packages, if you don't mind image size
+# install extra pip packages for comfyui, if you don't mind image size
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install \
     "numpy<2" \
@@ -61,7 +61,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     opencv-python opencv-python-headless opencv-contrib-python opencv-contrib-python-headless \
     huggingface_hub
 
-# install comfy-cli
+# install boot script requirements
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install wget giturlparse aria2p \
     && python ${COMFYUI_MN_PATH}/cm-cli.py save-snapshot
