@@ -61,7 +61,7 @@ jobs:
         if: steps.cache-nightly-hash.outputs.cache-hit != 'true'
         run: echo ${{ steps.get-nightly-hash.outputs.hash }} | tee .nightly-hash
 
-  build-latest-release:
+  build-latest:
     needs: fetch-upstream
     runs-on: ubuntu-latest
     if: needs.fetch-upstream.outputs.is_new_release == 'true'
