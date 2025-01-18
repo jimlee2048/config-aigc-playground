@@ -648,10 +648,10 @@ class ComfyUIInitializer:
             self.pre_scripts_dir.unlink()
         # init nodes and models
         failed_config = defaultdict(list)
-        if self.current_config and BOOT_INIT_NODE:
+        if self.current_config and INIT_NODE:
             self.node_manager.init_nodes(self.current_nodes, self.prev_nodes)
             failed_config['nodes'] = self.node_manager.failed_list
-        if self.current_config and BOOT_INIT_MODEL:
+        if self.current_config and INIT_MODEL:
             self.model_manager.init_models(self.current_models, self.prev_models)
             failed_config['models'] = self.model_manager.failed_list
         # execute post init scripts
@@ -684,8 +684,8 @@ if __name__ == '__main__':
     BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
     BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
     CN_NETWORK = get_bool_env('CN_NETWORK', False)
-    BOOT_INIT_NODE = get_bool_env('BOOT_INIT_NODE', False)
-    BOOT_INIT_MODEL = get_bool_env('BOOT_INIT_MODEL', False)
+    INIT_NODE = get_bool_env('INIT_NODE', False)
+    INIT_MODEL = get_bool_env('INIT_MODEL', False)
     PRE_INIT_SCRIPTS_DIR = WORKDIR / "pre-init-scripts"
     POST_INIT_SCRIPTS_DIR = WORKDIR / "post-init-scripts"
 

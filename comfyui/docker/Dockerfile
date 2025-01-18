@@ -67,10 +67,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     && python ${COMFYUI_MN_PATH}/cm-cli.py save-snapshot
 
 COPY boot.py .
-ENV CN_NETWORK=false
 ENV BOOT_CONFIG_DIR=${WORKDIR}/boot_config
-ENV BOOT_INIT_NODE=false
-ENV BOOT_INIT_MODEL=false
+ENV CN_NETWORK=false
+ENV INIT_NODE=false
+ENV INIT_MODEL=false
 
 EXPOSE 8188
 CMD [ "python", "boot.py" ]
