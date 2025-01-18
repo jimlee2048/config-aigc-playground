@@ -92,9 +92,9 @@ class BootProgress:
     def advance(self, msg: str = None, style: str = None):
         self.current_step += 1
         if msg:
-            self.log_progress(msg, style)
+            self.print(msg, style)
 
-    def log_progress(self, msg: str = None, style: str = None):
+    def print(self, msg: str = None, style: str = None):
         overall_progress = f"[{self.current_step}/{self.total_steps}]"
         if msg is None:
             logger.info(f"{overall_progress}")
@@ -309,7 +309,7 @@ class NodeManager:
                 self.progress.advance(msg=f"⚠️ Not allowed to install node: {node_name}", style="warning")
                 return False
             if self.is_node_exists(config):
-                self.progress.advance(msg=f"ℹ️ {node_name} already exists, skip.", style="info")
+                self.progress.advance(msg=f"ℹ️ {node_name} already exists. Skipped.", style="info")
                 return True
             self.progress.advance(msg=f"📦 Installing node: {node_name}", style="info")
             exec_command([sys.executable, str(COMFYUI_MN_PATH / "cm-cli.py"), "install", node_url])
@@ -328,7 +328,7 @@ class NodeManager:
                 self.progress.advance(msg=f"⚠️ Not allowed to uninstall node: {node_name}", style="warning")
                 return False
             if not self.is_node_exists(config):
-                self.progress.advance(msg=f"ℹ️ {node_name} not found, skip.", style="info")
+                self.progress.advance(msg=f"ℹ️ {node_name} not found. Skipped.", style="info")
                 return True
             possible_paths = { self.comfyui_path / "custom_nodes" / name for name in [node_name, node_alt_name] }
             self.progress.advance(msg=f"🗑️ Uninstalling node: {node_name}", style="info")
@@ -422,7 +422,7 @@ class ModelManager:
         parsed_url = urllib.parse.urlparse(url)
         return parsed_url.netloc in ["hf.co", "huggingface.co", "huggingface.com", "hf-mirror.com"]
     
-    def _is_civilai_url(self, url: str) -> bool:
+    def _is_civitai_url(self, url: str) -> bool:
         parsed_url = urllib.parse.urlparse(url)
         return parsed_url.netloc in ["civitai.com", "civitai.work"]
 
@@ -461,23 +461,17 @@ class ModelManager:
         model_filename = config['filename']
 
         if self.is_model_exists(config):
-            self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}, skip.", style="info")
+            self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}. Skipped.", style="info")
             return True
     
         self.progress.advance(msg=f"⬇️ Downloading: {model_filename} -> {model_dir}", style="info")
-        header = None
-        if self._is_huggingface_url(model_url) and HF_API_TOKEN:
-            header = f"Authorization: Bearer {HF_API_TOKEN}"
-        if self._is_civilai_url(model_url) and CIVITAI_API_TOKEN:
-            header = f"Authorization: Bearer {CIVITAI_API_TOKEN}"
+        download_options = defaultdict(str)
+        download_options['dir'] = str(self.comfyui_path / model_dir)
+        download_options['out'] = model_filename
 
         for attempt in range(1, 4):
             try:
-                download = self.aria2.add_uris([model_url], {
-                    "dir": str(self.comfyui_path / model_dir),
-                    "out": model_filename,
-                    "header": header
-                })
+                download = self.aria2.add_uris([model_url], download_options)
                 while not download.is_complete:
                     download.update()
                     if download.status == "error":
@@ -485,12 +479,30 @@ class ModelManager:
                         raise Exception(f"{download.error_message}")
                     if download.status == "removed":
                         raise Exception(f"Download was removed")
-                    self.progress.log_progress(f"{model_filename}: {download.progress_string()} | {download.completed_length_string()}/{download.total_length_string()} [{download.eta_string()}, {download.download_speed_string()}]", "info")
+                    self.progress.print(f"{model_filename}: {download.progress_string()} | {download.completed_length_string()}/{download.total_length_string()} [{download.eta_string()}, {download.download_speed_string()}]", "info")
                     time.sleep(1)
                 logger.info(f"✅ Downloaded: {model_filename} -> {model_dir}")
                 return True
             except Exception as e:
-                logger.warning(f"⚠️ Download attempt {attempt} failed: {str(e)}")
+                e_msg = str(e)
+                self.progress.print(f"⚠️ Download attempt {attempt} failed: {e_msg}", "warning")
+                # if HTTP authorization failed, try to add authorization info
+                if "authorization failed" in e_msg.lower():
+                    # hugingface: auth header
+                    if attempt == 1 and self._is_huggingface_url(model_url) and HF_API_TOKEN:
+                        download_options['header'] = f"Authorization: Bearer {HF_API_TOKEN}"
+                        self.progress.print(f"🔑 Retrying with provided HF_API_TOKEN", "info")
+                    # civitai: query token
+                    if attempt == 1 and self._is_civitai_url(model_url) and CIVITAI_API_TOKEN:
+                        parts = urllib.parse.urlsplit(model_url)
+                        query = dict(urllib.parse.parse_qsl(parts.query))
+                        query['token'] = CIVITAI_API_TOKEN
+                        model_url = parts._replace(query=urllib.parse.urlencode(query)).geturl()
+                        self.progress.print(f"🔑 Retrying with provided CIVITAI_API_TOKEN", "info")
+                    else:
+                        self.progress.print(f"❌ Authorization failed for {model_url}. Skipped.", "error")
+                        return False
+
         logger.error(f"❌ Exceeded max retries: {model_filename} -> {model_dir}")
         return False
 
@@ -508,7 +520,7 @@ class ModelManager:
             model_path = Path(config['path'])
             model_filename = config['filename']
             if not self.is_model_exists(config):
-                self.progress.advance(msg=f"ℹ️ {model_filename} not found in path: {model_path}, skip.", style="info")
+                self.progress.advance(msg=f"ℹ️ {model_filename} not found in path: {model_path}. Skipped.", style="info")
                 return True
             self.progress.advance(msg=f"🗑️ Removing model: {model_filename}", style="info")
             model_path.unlink()
