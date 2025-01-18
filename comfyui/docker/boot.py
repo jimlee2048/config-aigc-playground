@@ -465,21 +465,18 @@ class ModelManager:
             return True
     
         self.progress.advance(msg=f"⬇️ Downloading: {model_filename} -> {model_dir}", style="info")
-        headers = defaultdict(str)
-        # TODO: fix huggingface auth
-        # https://github.com/huggingface/huggingface_hub/blob/b2c9a148d465b43ab90fab6e4ebcbbf5a9df27d4/src/huggingface_hub/utils/_headers.py#L45
+        header = None
         if self._is_huggingface_url(model_url) and HF_API_TOKEN:
-            headers['authorization'] = f"Bearer {HF_API_TOKEN}"
+            header = f"Authorization: Bearer {HF_API_TOKEN}"
         if self._is_civilai_url(model_url) and CIVITAI_API_TOKEN:
-            headers['Content-Type'] = "application/json"
-            headers['Authorization'] = f"Bearer {CIVITAI_API_TOKEN}"
+            header = f"Authorization: Bearer {CIVITAI_API_TOKEN}"
 
         for attempt in range(1, 4):
             try:
                 download = self.aria2.add_uris([model_url], {
                     "dir": str(self.comfyui_path / model_dir),
                     "out": model_filename,
-                    "header": headers
+                    "header": header
                 })
                 while not download.is_complete:
                     download.update()
