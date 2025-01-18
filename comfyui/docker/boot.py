@@ -617,10 +617,11 @@ class ComfyUIInitializer:
 
     def _exec_scripts_in_dir(dir: Path) -> bool:
         if not dir or not dir.is_dir():
+            logger.warning(f"⚠️ {dir} is not a valid directory.")
             return False
         scripts = sorted(dir.glob("*.sh"))
         if not scripts:
-            logger.info(f"ℹ️ No scripts found in {dir}. Skipped.")
+            logger.info(f"ℹ️ No scripts found in {dir}.")
             return False
         logger.info(f"🛠️ Found {len(scripts)} scripts in {dir}:")
         for script in scripts:
@@ -632,6 +633,7 @@ class ComfyUIInitializer:
     def run(self):
         # execute pre init scripts
         if self.pre_scripts_dir:
+            logger.info(f"🛠️ Executing pre init scripts...")
             self._exec_scripts_in_dir(self.pre_scripts_dir)
         # init nodes and models
         failed_config = defaultdict(list)
@@ -643,6 +645,7 @@ class ComfyUIInitializer:
             failed_config['models'] = self.model_manager.failed_list
         # execute post init scripts
         if self.post_scripts_dir:
+            logger.info(f"🛠️ Executing post init scripts...")
             self._exec_scripts_in_dir(self.post_scripts_dir)
         # cache current config
         self.config_loader.write_config_cache(BOOT_CONFIG_PREV_PATH, {k: v for k, v in self.current_config.items() if k not in failed_config})
