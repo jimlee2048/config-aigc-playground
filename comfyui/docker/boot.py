@@ -23,7 +23,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(console=console, show_path=False, show_time=False)]
+    handlers=[RichHandler(console=console, show_path=False)]
 )
 logger = logging.getLogger("boot")
 
@@ -481,6 +481,7 @@ class ModelManager:
                 while not download.is_complete:
                     download.update()
                     if download.status == "error":
+                        download.remove(files=True)
                         raise Exception(f"{download.error_message}")
                     if download.status == "removed":
                         raise Exception(f"Download was removed")
