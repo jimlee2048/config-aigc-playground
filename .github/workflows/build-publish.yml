@@ -21,9 +21,9 @@ jobs:
   fetch-upstream:
     runs-on: ubuntu-latest
     outputs:
-      is_new_release: ${{ ! steps.cache-release-tag.outputs.cache-hit || inputs.force_rebuild }}
+      is_new_release: ${{ inputs.force_rebuild || github.event_name == 'push' || !steps.cache-release-tag.outputs.cache-hit }}
       latest_release_tag: ${{ steps.get-latest-tag.outputs.tag }}
-      is_new_commit: ${{ ! steps.cache-nightly-hash.outputs.cache-hit || inputs.force_rebuild }}
+      is_new_commit: ${{ inputs.force_rebuild || github.event_name == 'push' || !steps.cache-nightly-hash.outputs.cache-hit }}
       nightly_commit_hash: ${{ steps.get-nightly-hash.outputs.hash }}
 
     steps:
