@@ -27,18 +27,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger("boot")
 
+
 def get_bool_env(var_name: str, default: bool = False) -> bool:
-  value = os.environ.get(var_name)
-  if value is None:
-    return default
-  value = value.lower()
-  if value in ("true", "1", "t", "yes", "y"):
-    return True
-  elif value in ("false", "0", "f", "no", "n"):
-    return False
-  else:
-    # raise ValueError(f"Invalid bool value for environment variable '{var_name}': '{value}'")
-    return default
+    value = os.environ.get(var_name)
+    if value is None:
+        return default
+    value = value.lower()
+    if value in ("true", "1", "t", "yes", "y"):
+        return True
+    elif value in ("false", "0", "f", "no", "n"):
+        return False
+    else:
+        # raise ValueError(f"Invalid bool value for environment variable '{var_name}': '{value}'")
+        return default
+
 
 def compile_pattern(pattern_str: str) -> re.Pattern:
     if not pattern_str:
@@ -49,10 +51,12 @@ def compile_pattern(pattern_str: str) -> re.Pattern:
         logger.error(f"❌ Invalid regex pattern: {pattern_str}\n{str(e)}")
         return None
 
+
 def json_default(obj):
     if isinstance(obj, Path):
         return str(obj)
     raise TypeError
+
 
 def exec_command(command: list[str], cwd: str = None) -> int:
     with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=cwd) as proc:
@@ -60,6 +64,7 @@ def exec_command(command: list[str], cwd: str = None) -> int:
             logger.info(line.strip())
         proc.wait()
         return proc.returncode
+
 
 def exec_script(script: Path) -> int:
     if not script.is_file():
@@ -84,6 +89,7 @@ def exec_script(script: Path) -> int:
     except Exception as e:
         logger.error(f"❌ Error executing {script}: {str(e)}")
         return None
+
 
 class BootProgress:
     def __init__(self):
@@ -116,6 +122,7 @@ class BootProgress:
         else:
             logger.info(f"{overall_progress}: {msg}")
 
+
 class BootConfigManager:
     def __init__(self, config_dir: Path):
         self.config_dir = config_dir
@@ -126,7 +133,6 @@ class BootConfigManager:
         self.current_models = self.load_models_config(self.current_config)
         self.prev_nodes = self.load_nodes_config(self.prev_config)
         self.prev_models = self.load_models_config(self.prev_config)
-
 
     def _drop_duplicates_config(self, config: list[dict], cond_key: list[str]) -> tuple[list[dict], list[dict], int]:
         unique_items = []
@@ -157,7 +163,6 @@ class BootConfigManager:
         return url
 
     def load_boot_config(self) -> dict:
-        
 
         config_dir = Path(self.config_dir)
 
@@ -168,7 +173,7 @@ class BootConfigManager:
             logger.warning(f"⚠️ Invalid boot config detected, removing...")
             config_dir.unlink()
             return {}
-        
+
         if BOOT_CONFIG_INCLUDE or BOOT_CONFIG_EXCLUDE:
             include_pattern = compile_pattern(BOOT_CONFIG_INCLUDE)
             exclude_pattern = compile_pattern(BOOT_CONFIG_EXCLUDE)
@@ -186,7 +191,7 @@ class BootConfigManager:
         logger.info(f"📄 Found {len(config_files)} config files:")
         for file in config_files:
             logger.info(f"└─ {file}")
-        
+
         boot_config = defaultdict(list)
         try:
             for file in config_files:
@@ -213,7 +218,7 @@ class BootConfigManager:
         if not path.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
         try:
-            path.write_text(json.dumps(config,default=json_default,indent=4))
+            path.write_text(json.dumps(config, default=json_default, indent=4))
             logger.info(f"✅ Current config saved to {path}")
             return True
         except Exception as e:
@@ -286,7 +291,7 @@ class NodeManager:
         self.node_exclude = ["ComfyUI-Manager", "comfyui-manager"]
         self.failed_list = []
 
-    def _is_valid_git_repo(self, path: str) -> bool:        
+    def _is_valid_git_repo(self, path: str) -> bool:
         try:
             _ = git.Repo(path).git_dir
             return True
@@ -296,7 +301,8 @@ class NodeManager:
     def is_node_exists(self, config: dict) -> bool:
         node_name = config['name']
         node_alt_name = config.get('alt_name', node_name.lower())
-        possible_paths = { self.comfyui_path / "custom_nodes" / name for name in [node_name, node_alt_name] } 
+        possible_paths = {self.comfyui_path / "custom_nodes" / name
+                          for name in [node_name, node_alt_name]}
 
         for p in possible_paths:
             if p.exists() and self._is_valid_git_repo(p):
@@ -338,7 +344,8 @@ class NodeManager:
             if not self.is_node_exists(config):
                 self.progress.advance(msg=f"ℹ️ {node_name} not found. Skipped.", style="info")
                 return True
-            possible_paths = { self.comfyui_path / "custom_nodes" / name for name in [node_name, node_alt_name] }
+            possible_paths = {self.comfyui_path / "custom_nodes" / name
+                              for name in [node_name, node_alt_name]}
             self.progress.advance(msg=f"🗑️ Uninstalling node: {node_name}", style="info")
             for node_path in possible_paths:
                 if node_path.exists():
@@ -389,6 +396,7 @@ class NodeManager:
             return False
         return True
 
+
 class ModelManager:
     def __init__(self, comfyui_path: Path):
         self.comfyui_path = comfyui_path
@@ -406,7 +414,7 @@ class ModelManager:
     def _start_aria2c(self):
         try:
             subprocess.run([
-                "aria2c", 
+                "aria2c",
                 "--daemon=true",
                 "--enable-rpc",
                 "--rpc-listen-port=6800",
@@ -429,7 +437,7 @@ class ModelManager:
     def _is_huggingface_url(self, url: str) -> bool:
         parsed_url = urllib.parse.urlparse(url)
         return parsed_url.netloc in ["hf.co", "huggingface.co", "huggingface.com", "hf-mirror.com"]
-    
+
     def _is_civitai_url(self, url: str) -> bool:
         parsed_url = urllib.parse.urlparse(url)
         return parsed_url.netloc in ["civitai.com", "civitai.work"]
@@ -471,7 +479,7 @@ class ModelManager:
         if self.is_model_exists(config):
             self.progress.advance(msg=f"ℹ️ {model_filename} already exists in {model_dir}. Skipped.", style="info")
             return True
-    
+
         self.progress.advance(msg=f"⬇️ Downloading: {model_filename} -> {model_dir}", style="info")
         download_options = defaultdict(str)
         download_options['dir'] = str(self.comfyui_path / model_dir)
@@ -542,7 +550,7 @@ class ModelManager:
         if not current_config:
             logger.info(f"📦 No models in config")
             return False
-        
+
         models_to_download = []
         models_to_move = []
         models_to_remove = []
@@ -659,6 +667,7 @@ class ComfyUIInitializer:
         logger.info(f"🚀 Launching ComfyUI...")
         launch_args_list = ["--listen", "0.0.0.0,::", "--port", "8188"] + (COMFYUI_EXTRA_ARGS.split() if COMFYUI_EXTRA_ARGS else [])
         subprocess.run([sys.executable, str(self.comfyui_path / "main.py")] + launch_args_list, check=False)
+
 
 if __name__ == '__main__':
     logger.info(f"Starting boot process")
