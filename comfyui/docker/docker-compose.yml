@@ -3,9 +3,9 @@ services:
     image: jimlee2048/comfyui-docker:latest
     container_name: comfyui-docker
     env_file: .env
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     ports:
       - 8188:8188
     volumes:
@@ -30,5 +30,5 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ["0"]
               capabilities: [gpu]

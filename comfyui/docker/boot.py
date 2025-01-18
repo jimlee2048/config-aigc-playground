@@ -673,21 +673,23 @@ if __name__ == '__main__':
     logger.info(f"Starting boot process")
 
     # Environment variables
-    HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
-    CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
     WORKDIR = Path(os.environ.get('WORKDIR', "/workspace"))
     COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', None)) or WORKDIR / "comfyui"
-    COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
     COMFYUI_MN_PATH = Path(os.environ.get('COMFYUI_MN_PATH', None)) or COMFYUI_PATH / "custom_nodes" / "comfyui-manager"
-    BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
-    BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
-    BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
-    BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
-    CN_NETWORK = get_bool_env('CN_NETWORK', False)
-    INIT_NODE = get_bool_env('INIT_NODE', False)
-    INIT_MODEL = get_bool_env('INIT_MODEL', False)
+    BOOT_CONFIG_DIR = WORKDIR / "boot_config"
+    BOOT_CONFIG_PREV_PATH = WORKDIR / ".cache" / "boot_config.prev.json"
     PRE_INIT_SCRIPTS_DIR = WORKDIR / "pre-init-scripts"
     POST_INIT_SCRIPTS_DIR = WORKDIR / "post-init-scripts"
+
+    HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
+    CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
+    COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
+
+    BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
+    BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
+    INIT_NODE = get_bool_env('INIT_NODE', True)
+    INIT_MODEL = get_bool_env('INIT_MODEL', True)
+    CN_NETWORK = get_bool_env('CN_NETWORK', False)
 
     # check if comfyui path exists
     if not COMFYUI_PATH.is_dir():
