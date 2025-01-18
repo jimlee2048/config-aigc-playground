@@ -1,0 +1,21 @@
+services:
+  comfyui-docker:
+    image: jimlee2048/comfyui-docker:latest
+    container_name: comfyui-docker
+    env_file: .env
+    ports:
+      - 8188:8188
+    volumes:
+      - ./volume/user:/workspace/ComfyUI/user
+      - ./volume/output:/workspace/ComfyUI/output
+      - ./volume/models:/workspace/ComfyUI/models
+      - ./config:/workspace/boot_config
+    security_opt:
+      - "label=type:nvidia_container_t"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
