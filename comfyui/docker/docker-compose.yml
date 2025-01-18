@@ -13,12 +13,16 @@ services:
       - ./volume/output:/workspace/ComfyUI/output
       - ./volume/models:/workspace/ComfyUI/models
       - ../config:/workspace/boot_config
-      ## optional: extra model paths
+      ## extra model paths (optional)
       ## https://github.com/comfyanonymous/ComfyUI/blob/master/extra_model_paths.yaml.example
       # - ./extra_model_paths.yaml:/workspace/ComfyUI/extra_model_paths.yaml
       # - /path/to/sd-webui-a1111/models:/workspace/external_models/sd-webui-a1111
-      ## optional: external custom_nodes folder
+      ## external custom_nodes folder (optional)
       # - /path/to/a_custom_nodes:/workspace/ComfyUI/custom_nodes/a_custom_nodes
+      ## pre init scripts (optional)
+      # - ./pre-init-scripts:/workspace/pre-init-scripts
+      ## post init scripts (optional)
+      # - ./post-init-scripts:/workspace/post-init-scripts
     security_opt:
       - "label=type:nvidia_container_t"
     deploy:

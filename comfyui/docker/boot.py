@@ -59,23 +59,31 @@ def exec_command(command: list[str], cwd: str = None) -> int:
         for line in proc.stdout:
             logger.info(line.strip())
         proc.wait()
-        if proc.returncode != 0:
-            raise subprocess.CalledProcessError(proc.returncode, command)
         return proc.returncode
 
-def exec_script(path: str) -> bool:
-    script = Path(path)
+def exec_script(script: Path) -> int:
     if not script.is_file():
-        logger.warning(f"⚠️ Invalid script path: {path}")
-        return False
+        logger.warning(f"⚠️ Invalid script path: {script}")
+        return None
     try:
-        logger.info(f"🛠️ Executing: {path}")
-        exec_command(["bash", str(script)])
-        logger.info(f"✅ Script completed: {path}")
-        return True
+        logger.info(f"🛠️ Executing script: {script}")
+        if script.suffix == ".py":
+            return_code = exec_command([sys.executable, str(script)])
+        elif script.suffix == ".sh" and os.name == "posix":
+            return_code = exec_command(["bash", str(script)])
+        elif script.suffix == ".ps1" and os.name == "nt":
+            return_code = exec_command(["powershell", "-File", str(script)])
+        elif script.suffix == ".bat" and os.name == "nt":
+            return_code = exec_command([str(script)])
+        else:
+            logger.warning(f"⚠️ Unsupported script type: {script}. Skipped.")
+            return None
+        if return_code != 0:
+            logger.warning(f"⚠️ {script} exited with non-zero code: {return_code}")
+        return return_code
     except Exception as e:
-        logger.error(f"❌ Script error: {path}\n{str(e)}")
-        return False
+        logger.error(f"❌ Error executing {script}: {str(e)}")
+        return None
 
 class BootProgress:
     def __init__(self):
@@ -314,7 +322,7 @@ class NodeManager:
             self.progress.advance(msg=f"📦 Installing node: {node_name}", style="info")
             exec_command([sys.executable, str(COMFYUI_MN_PATH / "cm-cli.py"), "install", node_url])
             if 'script' in config:
-                exec_script(config['script'])
+                exec_script(Path(config['script']))
             return True
         except Exception as e:
             logger.error(f"❌ Failed to install node {node_name}: {str(e)}")
@@ -593,9 +601,11 @@ class ModelManager:
 
 
 class ComfyUIInitializer:
-    def __init__(self, config_dir: Path = None, comfyui_path: Path = None):
+    def __init__(self, boot_config: Path = None, comfyui_path: Path = None, pre_init_scripts: Path = None, post_init_scripts: Path = None):
         self.comfyui_path = comfyui_path
-        self.config_loader = BootConfigManager(config_dir)
+        self.pre_scripts_dir = pre_init_scripts
+        self.post_scripts_dir = post_init_scripts
+        self.config_loader = BootConfigManager(boot_config)
         self.current_config = self.config_loader.current_config
         self.prev_config = self.config_loader.prev_config
         self.current_nodes = self.config_loader.current_nodes
@@ -605,7 +615,24 @@ class ComfyUIInitializer:
         self.node_manager = NodeManager(comfyui_path)
         self.model_manager = ModelManager(comfyui_path)
 
+    def _exec_scripts_in_dir(dir: Path) -> bool:
+        if not dir or not dir.is_dir():
+            return False
+        scripts = sorted(dir.glob("*.sh"))
+        if not scripts:
+            logger.info(f"ℹ️ No scripts found in {dir}. Skipped.")
+            return False
+        logger.info(f"🛠️ Found {len(scripts)} scripts in {dir}:")
+        for script in scripts:
+            logger.info(f"└─ {script.name}")
+        for script in scripts:
+            exec_script(script)
+        return True
+
     def run(self):
+        # execute pre init scripts
+        if self.pre_scripts_dir:
+            self._exec_scripts_in_dir(self.pre_scripts_dir)
         # init nodes and models
         failed_config = defaultdict(list)
         if self.current_config and BOOT_INIT_NODE:
@@ -614,6 +641,10 @@ class ComfyUIInitializer:
         if self.current_config and BOOT_INIT_MODEL:
             self.model_manager.init_models(self.current_models, self.prev_models)
             failed_config['models'] = self.model_manager.failed_list
+        # execute post init scripts
+        if self.post_scripts_dir:
+            self._exec_scripts_in_dir(self.post_scripts_dir)
+        # cache current config
         self.config_loader.write_config_cache(BOOT_CONFIG_PREV_PATH, {k: v for k, v in self.current_config.items() if k not in failed_config})
         # launch comfyui
         logger.info(f"🚀 Launching ComfyUI...")
@@ -626,9 +657,10 @@ if __name__ == '__main__':
     # Environment variables
     HF_API_TOKEN = os.environ.get('HF_API_TOKEN', None)
     CIVITAI_API_TOKEN = os.environ.get('CIVITAI_API_TOKEN', None)
-    COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', "/workspace/ComfyUI"))
+    WORKDIR = Path(os.environ.get('WORKDIR', "/workspace"))
+    COMFYUI_PATH = Path(os.environ.get('COMFYUI_PATH', None)) or WORKDIR / "comfyui"
     COMFYUI_EXTRA_ARGS = os.environ.get('COMFYUI_EXTRA_ARGS', None)
-    COMFYUI_MN_PATH = Path(os.environ.get('COMFYUI_MN_PATH', COMFYUI_PATH / "custom_nodes" / "comfyui-manager"))
+    COMFYUI_MN_PATH = Path(os.environ.get('COMFYUI_MN_PATH', None)) or COMFYUI_PATH / "custom_nodes" / "comfyui-manager"
     BOOT_CONFIG_DIR = Path(os.environ.get('BOOT_CONFIG_DIR', None))
     BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
     BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
@@ -636,6 +668,8 @@ if __name__ == '__main__':
     BOOT_CN_NETWORK = get_bool_env('BOOT_CN_NETWORK', False)
     BOOT_INIT_NODE = get_bool_env('BOOT_INIT_NODE', False)
     BOOT_INIT_MODEL = get_bool_env('BOOT_INIT_MODEL', False)
+    PRE_INIT_SCRIPTS_DIR = WORKDIR / "pre-init-scripts"
+    POST_INIT_SCRIPTS_DIR = WORKDIR / "post-init-scripts"
 
     # check if comfyui path exists
     if not COMFYUI_PATH.is_dir():
@@ -654,6 +688,6 @@ if __name__ == '__main__':
         if CIVITAI_API_TOKEN:
             logger.warning(f"⚠️ CIVITAIAPI_TOKEN will be sent to civitai.work")
 
-    app = ComfyUIInitializer(BOOT_CONFIG_DIR, COMFYUI_PATH)
+    app = ComfyUIInitializer(BOOT_CONFIG_DIR, COMFYUI_PATH, PRE_INIT_SCRIPTS_DIR, POST_INIT_SCRIPTS_DIR)
     logger.info(f"Initializing ComfyUI...")
     app.run()
