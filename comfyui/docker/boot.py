@@ -147,7 +147,7 @@ class BootConfigManager:
         if not parsed_url.netloc:
             raise Exception(f"Invalid URL: {url}")
         # chinese mainland network settings
-        if BOOT_CN_NETWORK:
+        if CN_NETWORK:
             fr_map = {
                 'huggingface.co': 'hf-mirror.com',
                 'civitai.com': 'civitai.work'
@@ -157,17 +157,17 @@ class BootConfigManager:
         return url
 
     def load_boot_config(self) -> dict:
-        logger.info(f"📂 Loading boot config from {self.config_dir}")
+        
 
         config_dir = Path(self.config_dir)
-        if not config_dir.is_dir():
-            if config_dir.is_file():
-                logger.warning(f"⚠️ Invalid boot config detected, removing")
-                shutil.rmtree(config_dir)
-            logger.info(f"ℹ️ No boot config found, using default settings")
+
+        if config_dir.is_dir():
+            logger.info(f"📂 Loading boot config from {self.config_dir}")
+            config_files = list(config_dir.rglob("*.toml"))
+        elif config_dir.is_file():
+            logger.warning(f"⚠️ Invalid boot config detected, removing...")
+            config_dir.unlink()
             return {}
-        
-        config_files = list(config_dir.rglob("*.toml"))
         
         if BOOT_CONFIG_INCLUDE or BOOT_CONFIG_EXCLUDE:
             include_pattern = compile_pattern(BOOT_CONFIG_INCLUDE)
@@ -202,7 +202,7 @@ class BootConfigManager:
         if prev_path.is_file():
             logger.info(f"📂 Loading previous config: {prev_path}")
         elif prev_path.is_dir():
-            logger.warning(f"⚠️ Invalid previous config detected, removing")
+            logger.warning(f"⚠️ Invalid previous config detected, removing...")
             shutil.rmtree(prev_path)
         else:
             logger.info(f"ℹ️ No previous config found")
@@ -458,7 +458,7 @@ class ModelManager:
                 return False
             if model_path.is_file():
                 return True
-            else:
+            elif model_path.is_dir():
                 logger.warning(f"⚠️ {model_filename} invalid, removing: {model_path}")
                 shutil.rmtree(model_path)
         return False
@@ -631,10 +631,13 @@ class ComfyUIInitializer:
         return True
 
     def run(self):
-        # execute pre init scripts
-        if self.pre_scripts_dir:
-            logger.info(f"🛠️ Executing pre init scripts...")
+        # execute pre-init scripts
+        if self.pre_scripts_dir.is_dir():
+            logger.info(f"🛠️ Executing pre-init scripts...")
             self._exec_scripts_in_dir(self.pre_scripts_dir)
+        elif self.pre_scripts_dir.is_file():
+            logger.warning(f"⚠️ {self.pre_scripts_dir} invalid, removing...")
+            self.pre_scripts_dir.unlink()
         # init nodes and models
         failed_config = defaultdict(list)
         if self.current_config and BOOT_INIT_NODE:
@@ -644,9 +647,12 @@ class ComfyUIInitializer:
             self.model_manager.init_models(self.current_models, self.prev_models)
             failed_config['models'] = self.model_manager.failed_list
         # execute post init scripts
-        if self.post_scripts_dir:
+        if self.post_scripts_dir.is_dir():
             logger.info(f"🛠️ Executing post init scripts...")
             self._exec_scripts_in_dir(self.post_scripts_dir)
+        elif self.post_scripts_dir.is_file():
+            logger.warning(f"⚠️ {self.post_scripts_dir} invalid, removing...")
+            self.post_scripts_dir.unlink()
         # cache current config
         self.config_loader.write_config_cache(BOOT_CONFIG_PREV_PATH, {k: v for k, v in self.current_config.items() if k not in failed_config})
         # launch comfyui
@@ -668,7 +674,7 @@ if __name__ == '__main__':
     BOOT_CONFIG_PREV_PATH = Path.home() / ".cache" / "comfyui" / "boot_config.prev.json"
     BOOT_CONFIG_INCLUDE = os.environ.get('BOOT_CONFIG_INCLUDE', None)
     BOOT_CONFIG_EXCLUDE = os.environ.get('BOOT_CONFIG_EXCLUDE', None)
-    BOOT_CN_NETWORK = get_bool_env('BOOT_CN_NETWORK', False)
+    CN_NETWORK = get_bool_env('CN_NETWORK', False)
     BOOT_INIT_NODE = get_bool_env('BOOT_INIT_NODE', False)
     BOOT_INIT_MODEL = get_bool_env('BOOT_INIT_MODEL', False)
     PRE_INIT_SCRIPTS_DIR = WORKDIR / "pre-init-scripts"
@@ -680,7 +686,7 @@ if __name__ == '__main__':
         exit(1)
 
     # chinese mainland network settings
-    if BOOT_CN_NETWORK:
+    if CN_NETWORK:
         logger.info(f"🌐 Using CN network optimization")
         # pip source to ustc mirror
         os.environ['PIP_INDEX_URL'] = 'https://mirrors.ustc.edu.cn/pypi/web/simple'
