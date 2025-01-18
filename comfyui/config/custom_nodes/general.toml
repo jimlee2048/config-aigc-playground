@@ -71,5 +71,8 @@ url = "https://github.com/MaraScott/ComfyUI_MaraScott_Nodes"
 [[custom_nodes]]
 url = "https://github.com/city96/ComfyUI-GGUF"
 
+[[custom_nodes]]
+url = "https://github.com/miaoshouai/ComfyUI-Miaoshouai-Tagger"
+
 # [[custom_nodes]]
 # url = "https://github.com/BennyKok/comfyui-deploy"
