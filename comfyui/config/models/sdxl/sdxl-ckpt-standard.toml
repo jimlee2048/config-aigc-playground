@@ -22,10 +22,10 @@ filename = "Juggernaut-XL-v11.safetensors"
 
 # LEOSAM's HelloWorld XL V7
 # https://civitai.com/models/43977/leosams-helloworld-xl
-[[models]]
-url = "https://civitai.com/api/download/models/570138?type=Model&format=SafeTensor&size=pruned&fp=fp16"
-dir = "models/checkpoints/sdxl"
-filename = "helloworldXL70.safetensors"
+# [[models]]
+# url = "https://civitai.com/api/download/models/570138?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+# dir = "models/checkpoints/sdxl"
+# filename = "helloworldXL70.safetensors"
 
 # STOIQO NewReality XL PRO
 # https://civitai.com/models/161068?modelVersionId=690310
@@ -36,7 +36,7 @@ filename = "STOIQO_NewReality_XL_PRO.safetensors"
 
 # epicrealismXL VXI-aBEAST
 # https://civitai.com/models/277058
-[[models]]
-url = "https://civitai.com/api/download/models/1156226?type=Model&format=SafeTensor&size=pruned&fp=fp16"
-dir = "models/checkpoints/sdxl"
-filename = "epicrealismXL_vxiAbeast.safetensors"
+# [[models]]
+# url = "https://civitai.com/api/download/models/1156226?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+# dir = "models/checkpoints/sdxl"
+# filename = "epicrealismXL_vxiAbeast.safetensors"
