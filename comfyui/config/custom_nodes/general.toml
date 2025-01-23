@@ -1,37 +1,64 @@
 [[custom_nodes]]
+node_id = "comfyui-manager"
 url = "https://github.com/ltdrdata/ComfyUI-Manager"
 
 [[custom_nodes]]
+node_id = "comfyui-impact-pack"
 url = "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
 
 [[custom_nodes]]
+node_id = "comfyui-inspire-pack"
 url = "https://github.com/ltdrdata/ComfyUI-Inspire-Pack"
 
 [[custom_nodes]]
+node_id = "comfyui-easy-use"
 url = "https://github.com/yolain/ComfyUI-Easy-Use"
 
 [[custom_nodes]]
+node_id = "comfyui_layerstyle"
 url = "https://github.com/chflame163/ComfyUI_LayerStyle"
 
 [[custom_nodes]]
 url = "https://github.com/chflame163/ComfyUI_LayerStyle_Advance"
 
 [[custom_nodes]]
+node_id = "comfyui_controlnet_aux"
 url = "https://github.com/Fannovel16/comfyui_controlnet_aux"
 
 [[custom_nodes]]
+node_id = "comfyui-advanced-controlnet"
 url = "https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet"
 
 [[custom_nodes]]
+node_id = "rgthree-comfy"
 url = "https://github.com/rgthree/rgthree-comfy"
 
 [[custom_nodes]]
+node_id = "comfyui-kjnodes"
 url = "https://github.com/kijai/ComfyUI-KJNodes"
 
 [[custom_nodes]]
+node_id = "comfyui_essentials"
 url = "https://github.com/cubiq/ComfyUI_essentials"
 
 [[custom_nodes]]
+node_id = "comfyui-0246"
+url = "https://github.com/Trung0246/ComfyUI-0246"
+
+[[custom_nodes]]
+node_id = "comfy-mtb"
+url = "https://github.com/melMass/comfy_mtb"
+
+[[custom_nodes]]
+node_id = "comfyui_fill-nodes"
+url = "https://github.com/filliptm/ComfyUI_Fill-Nodes"
+
+[[custom_nodes]]
+node_id = "comfyui_marascott_nodes"
+url = "https://github.com/MaraScott/ComfyUI_MaraScott_Nodes"
+
+[[custom_nodes]]
+node_id = "comfyui_ipadapter_plus"
 url = "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
 [[models]]
 url = "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors"
@@ -43,25 +70,20 @@ dir = "models/clip_vision"
 filename = "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors"
 
 [[custom_nodes]]
+node_id = "comfyui-crystools"
 url = "https://github.com/crystian/ComfyUI-Crystools"
 
 [[custom_nodes]]
+node_id = "comfyui-custom-scripts"
 url = "https://github.com/pythongosssss/ComfyUI-Custom-Scripts"
 
 [[custom_nodes]]
+node_id = "comfyui-wd14-tagger"
 url = "https://github.com/pythongosssss/ComfyUI-WD14-Tagger"
 
 [[custom_nodes]]
+node_id = "comfyui-inpaint-nodes"
 url = "https://github.com/Acly/comfyui-inpaint-nodes"
-
-[[custom_nodes]]
-url = "https://github.com/Trung0246/ComfyUI-0246"
-
-[[custom_nodes]]
-url = "https://github.com/filliptm/ComfyUI_Fill-Nodes"
-
-[[custom_nodes]]
-url = "https://github.com/MaraScott/ComfyUI_MaraScott_Nodes"
 
 [[custom_nodes]]
 url = "https://github.com/city96/ComfyUI-GGUF"
@@ -70,4 +92,13 @@ url = "https://github.com/city96/ComfyUI-GGUF"
 url = "https://github.com/miaoshouai/ComfyUI-Miaoshouai-Tagger"
 
 # [[custom_nodes]]
+# node_id = "comfyui-deploy"
 # url = "https://github.com/BennyKok/comfyui-deploy"
+
+[[custom_nodes]]
+node_id = "comfyui_ryanonyheinside"
+url = "https://github.com/ryanontheinside/ComfyUI_RyanOnTheInside"
+
+[[custom_nodes]]
+node_id = "comfyui_profilerx"
+url = "https://github.com/ryanontheinside/ComfyUI_ProfilerX"

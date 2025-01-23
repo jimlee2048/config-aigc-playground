@@ -1,2 +1,6 @@
 [[custom_nodes]]
 url = "https://github.com/logtd/ComfyUI-Fluxtapoz"
+
+[[custom_nodes]]
+node_id = "flux-lightning"
+url = "https://github.com/shenduldh/ComfyUI-Lightning"
