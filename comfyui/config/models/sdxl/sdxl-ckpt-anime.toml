@@ -4,11 +4,11 @@ url = "https://civitai.com/api/download/models/290640?type=Model&format=SafeTens
 dir = "models/checkpoints/sdxl"
 filename = "pony-diffusion-v6-xl.safetensors"
 
-# AnimagineXL 3.1
+# AnimagineXL 4.0
 [[models]]
-url = "https://huggingface.co/cagliostrolab/animagine-xl-3.1/resolve/main/animagine-xl-3.1.safetensors"
+url = "https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0.safetensors"
 dir = "models/checkpoints/sdxl"
-filename = "animagine-xl-3.1.safetensors"
+filename = "animagine-xl-4.0.safetensors"
 
 # Kohaku XL Zeta
 [[models]]
