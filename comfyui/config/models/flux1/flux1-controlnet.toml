@@ -7,3 +7,8 @@ filename = "flux1-canny-dev-lora.safetensors"
 url = "https://huggingface.co/black-forest-labs/FLUX.1-Depth-dev-lora/resolve/main/flux1-depth-dev-lora.safetensors"
 dir = "models/loras/flux1"
 filename = "flux1-depth-dev-lora.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro/blob/main/diffusion_pytorch_model.safetensors"
+dir = "models/controlnet/flux1"
+filename = "flux1-dev-controlnet-union-pro.safetensors"
