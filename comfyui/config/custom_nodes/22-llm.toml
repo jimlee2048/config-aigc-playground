@@ -1,6 +1,6 @@
-[[custom_nodes]]
-node_id = "comfyui_llm_party"
-url = "https://github.com/heshengtao/comfyui_LLM_party"
+# [[custom_nodes]]
+# node_id = "comfyui_llm_party"
+# url = "https://github.com/heshengtao/comfyui_LLM_party"
 
 [[custom_nodes]]
 node_id = "comfyui-ollama"
