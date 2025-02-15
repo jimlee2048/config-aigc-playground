@@ -4,3 +4,7 @@ url = "https://github.com/logtd/ComfyUI-Fluxtapoz"
 [[custom_nodes]]
 node_id = "flux-lightning"
 url = "https://github.com/shenduldh/ComfyUI-Lightning"
+
+[[custom_nodes]]
+node_id = "teacache"
+url = "https://github.com/welltop-cn/ComfyUI-TeaCache"
