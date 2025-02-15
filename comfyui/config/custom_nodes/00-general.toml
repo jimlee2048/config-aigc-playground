@@ -106,3 +106,7 @@ url = "https://github.com/ryanontheinside/ComfyUI_ProfilerX"
 [[custom_nodes]]
 # node_id = "comfyui-to-python-extension"
 url = "https://github.com/pydn/ComfyUI-to-Python-Extension"
+
+[[custom_nodes]]
+node_id = "comfyui_fizznodes"
+url = "https://github.com/FizzleDorf/ComfyUI_FizzNodes"

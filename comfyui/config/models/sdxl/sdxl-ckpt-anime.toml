@@ -6,9 +6,9 @@ filename = "pony-diffusion-v6-xl.safetensors"
 
 # AnimagineXL 4.0
 [[models]]
-url = "https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0.safetensors"
+url = "https://huggingface.co/cagliostrolab/animagine-xl-4.0/resolve/main/animagine-xl-4.0-opt.safetensors"
 dir = "models/checkpoints/sdxl"
-filename = "animagine-xl-4.0.safetensors"
+filename = "animagine-xl-4.0-opt.safetensors"
 
 # Kohaku XL Zeta
 [[models]]
