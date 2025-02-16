@@ -1,6 +1,2 @@
 [[custom_nodes]]
 url = "https://github.com/kijai/ComfyUI-DDColor"
-
-[[custom_nodes]]
-node_id = "comfyui-propost"
-url = "https://github.com/digitaljohn/comfyui-propost"
