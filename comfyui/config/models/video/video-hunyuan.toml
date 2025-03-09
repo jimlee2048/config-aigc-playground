@@ -1,0 +1,40 @@
+# text encoders
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/clip_l.safetensors"
+dir = "models/text_encoders"
+filename = "clip_l.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/llava_llama3_fp16.safetensors"
+dir = "models/text_encoders"
+filename = "llava_llama3_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/text_encoders/llava_llama3_fp8_scaled.safetensors"
+dir = "models/text_encoders"
+filename = "llava_llama3_fp8_scaled.safetensors"
+
+# vae
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/vae/hunyuan_video_vae_bf16.safetensors"
+dir = "models/vae"
+filename = "hunyuan_video_vae_bf16.safetensors"
+
+# t2v
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/diffusion_models/hunyuan_video_t2v_720p_bf16.safetensors"
+dir = "models/diffusion_models"
+filename = "hunyuan_video_t2v_720p_bf16.safetensors"
+
+# i2v
+## clip vision
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/clip_vision/llava_llama3_vision.safetensors"
+dir = "models/clip_vision"
+filename = "llava_llama3_vision.safetensors"
+
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HunyuanVideo_repackaged/resolve/main/split_files/diffusion_models/hunyuan_video_image_to_video_720p_bf16.safetensors"
+dir = "models/diffusion_models"
+filename = "hunyuan_video_i2v_720p_bf16.safetensors"

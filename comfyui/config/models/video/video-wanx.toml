@@ -1,0 +1,65 @@
+# text encoder
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp16.safetensors"
+dir = "models/text_encoders"
+filename = "umt5_xxl_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+dir = "models/text_encoders"
+filename = "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+
+
+# vae
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors"
+dir = "models/vae"
+filename = "wan_2.1_vae.safetensors"
+
+# t2v
+## 14B
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_t2v_14B_fp16.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_t2v_14B_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_t2v_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_t2v_14B_fp8_scaled.safetensors"
+
+# 1.3B
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_t2v_1.3B_fp16.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_t2v_1.3B_fp16.safetensors"
+
+
+# i2v
+## clip vision
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors"
+dir = "models/clip_vision"
+filename = "clip_vision_h.safetensors"
+
+## 720P
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_i2v_720p_14B_fp16.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_i2v_720p_14B_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_i2v_720p_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_i2v_720p_14B_fp8_scaled.safetensors"
+
+## 480p
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_i2v_480p_14B_fp16.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_i2v_480p_14B_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_i2v_480p_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models"
+filename = "wan2.1_i2v_480p_14B_fp8_scaled.safetensors"
