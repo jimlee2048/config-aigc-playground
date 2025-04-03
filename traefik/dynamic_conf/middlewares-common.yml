@@ -1,0 +1,25 @@
+http:
+  middlewares:
+    local-allowlist-http: &x-local-allowlist
+      ipAllowList:
+        sourceRange:
+          - "127.0.0.1/32"
+          - "192.168.0.0/16"
+          - "10.0.0.0/8"
+          - "172.16.0.0/12"
+          - "100.64.0.0/10"
+    hsts-headers:
+      headers:
+        stsPreload: true
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        forceSTSHeader: true
+    security-headers:
+      headers:
+        contentTypeNosniff: true
+        browserXSSFilter: true
+
+tcp:
+  middlewares:
+    local-allowlist-tcp:
+      <<: *x-local-allowlist

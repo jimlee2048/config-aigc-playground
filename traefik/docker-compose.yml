@@ -1,0 +1,77 @@
+services:
+  traefik:
+    image: traefik:v3
+    container_name: traefik
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    command:
+      # Global configuration
+      - "--global.checknewversion=true"
+      - "--global.sendanonymoususage=false"
+      # Logs configuration
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-INFO}"
+      # API and dashboard configuration
+      - "--api.dashboard=true"
+      - "--api.disabledashboardad=true"
+      # Providers configuration
+      - "--providers.file.directory=/etc/traefik/dynamic_conf"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik_network"
+      - "--providers.docker.exposedbydefault=false"
+      # EntryPoints configuration
+      ## http
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      ## https
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.asdefault=true"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certresolver=dns-${TRAEFIK_ACME_ENVIRONMENT:-staging}"
+      - "--entrypoints.websecure.http.tls.domains[0].main=${DOMAIN:?error}"
+      - "--entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAIN:?error}"
+      - "--entrypoints.websecure.http.middlewares=local-allowlist-http@file,hsts-headers@file,security-headers@file"
+      # Certificate resolvers
+      ## DNS challenge
+      ### production
+      - "--certificatesresolvers.dns-production.acme.email=admin@${DOMAIN:?error}"
+      - "--certificatesresolvers.dns-production.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.dns-production.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.dns-production.acme.dnschallenge=true"
+      - "--certificatesresolvers.dns-production.acme.dnschallenge.provider=${TRAEFIK_ACME_DNSCHALLENGE_PROVIDER:-cloudflare}"
+      - "--certificatesresolvers.dns-production.acme.dnschallenge.resolvers=${TRAEFIK_ACME_DNSCHALLENGE_RESOLVERS:-1.1.1.1:53}"
+      - "--certificatesresolvers.dns-production.acme.dnschallenge.propagation.delaybeforechecks=60"
+      ### staging
+      - "--certificatesresolvers.dns-staging.acme.email=admin@${DOMAIN:?error}"
+      - "--certificatesresolvers.dns-staging.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.dns-staging.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.dns-staging.acme.dnschallenge=true"
+      - "--certificatesresolvers.dns-staging.acme.dnschallenge.provider=${TRAEFIK_ACME_DNSCHALLENGE_PROVIDER:-cloudflare}"
+      - "--certificatesresolvers.dns-staging.acme.dnschallenge.resolvers=${TRAEFIK_ACME_DNSCHALLENGE_RESOLVERS:-1.1.1.1:53}"
+      - "--certificatesresolvers.dns-staging.acme.dnschallenge.propagation.delaybeforechecks=60"
+    environment:
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_certs:/letsencrypt
+      - ${TRAEFIK_DYNAMIC_CONFIG_PATH:-./dynamic_conf}:/etc/traefik/dynamic_conf
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.rule=Host(`tf.${DOMAIN:?error}`)"
+
+volumes:
+  traefik_certs:
+    name: traefik_certs
+
+networks:
+  default:
+    name: traefik_network
