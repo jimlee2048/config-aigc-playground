@@ -1,0 +1,35 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    networks:
+      - traefik_network
+    volumes:
+      - ./volume:/root/.ollama
+    environment:
+      - OLLAMA_ORIGINS=*
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.ollama.loadbalancer.server.port=11434"
+      - "traefik.http.routers.ollama.service=ollama"
+      - "traefik.http.routers.ollama.rule=Host(`ollama.${DOMAIN}`)"
+      - "traefik.http.middlewares.ollama-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.ollama-headers.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.ollama-headers.headers.accesscontrolalloworiginlistregex=${OLLAMA_ORIGINS:-*}"
+      - "traefik.http.middlewares.ollama-headers.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.ollama-headers.headers.addvaryheader=true"
+      - "traefik.http.routers.ollama.middlewares=ollama-headers"
+    security_opt:
+      - "label=type:nvidia_container_t"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+
+networks:
+  traefik_network:
+    external: true
