@@ -2,14 +2,20 @@ services:
   comfyui-docker:
     image: jimlee2048/comfyui-docker:latest
     container_name: comfyui-docker
+    restart: unless-stopped
+    networks:
+      - traefik_network
     env_file: .env
-    ports:
-      - 8188:8188
     volumes:
       - ./volume/user:/workspace/ComfyUI/user
       - ./volume/output:/workspace/ComfyUI/output
       - ./volume/models:/workspace/ComfyUI/models
       - ./config:/workspace/boot_config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.comfyui.loadbalancer.server.port=8188"
+      - "traefik.http.routers.comfyui.service=comfyui"
+      - "traefik.http.routers.comfyui.rule=Host(`comfyui.${DOMAIN}`)"
     security_opt:
       - "label=type:nvidia_container_t"
     deploy:
@@ -19,3 +25,7 @@ services:
             - driver: nvidia
               device_ids: ["0"]
               capabilities: [gpu]
+
+networks:
+  traefik_network:
+    external: true

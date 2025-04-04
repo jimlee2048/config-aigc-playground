@@ -5,10 +5,10 @@ services:
     restart: unless-stopped
     networks:
       - traefik_network
-    volumes:
-      - ./volume:/root/.ollama
     environment:
       - OLLAMA_ORIGINS=*
+    volumes:
+      - ./volume:/root/.ollama
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.ollama.loadbalancer.server.port=11434"
