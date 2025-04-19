@@ -1,0 +1,9 @@
+# flex1
+[[models]]
+url = "https://huggingface.co/ostris/Flex.1-alpha/resolve/main/Flex.1-alpha.safetensors"
+dir = "models/checkpoints/flux1"
+filename = "Flex.1-alpha.safetensors"
+[[models]]
+url = "https://huggingface.co/ostris/Flex.1-alpha-Redux/resolve/main/flex1_redux_siglip2_512.safetensors"
+dir = "models/style_models/flux1"
+filename = "flex1_redux_siglip2_512.safetensors"
