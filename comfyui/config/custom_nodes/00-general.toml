@@ -48,6 +48,8 @@ url = "https://github.com/Trung0246/ComfyUI-0246"
 [[custom_nodes]]
 node_id = "comfy-mtb"
 url = "https://github.com/melMass/comfy_mtb"
+# https://github.com/melMass/comfy_mtb/issues/230
+version = "nightly"
 
 [[custom_nodes]]
 node_id = "comfyui_fill-nodes"

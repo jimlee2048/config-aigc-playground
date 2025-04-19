@@ -1,0 +1,23 @@
+# vae
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HiDream-I1_ComfyUI/resolve/main/split_files/vae/ae.safetensors"
+dir = "models/vae"
+filename = "ae.safetensors"
+
+# text_encoders
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HiDream-I1_ComfyUI/resolve/main/split_files/text_encoders/clip_l_hidream.safetensors"
+dir = "models/text_encoders"
+filename = "clip_l_hidream.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HiDream-I1_ComfyUI/resolve/main/split_files/text_encoders/clip_g_hidream.safetensors"
+dir = "models/text_encoders"
+filename = "clip_g_hidream.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HiDream-I1_ComfyUI/resolve/main/split_files/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors"
+dir = "models/text_encoders"
+filename = "t5xxl_fp8_e4m3fn_scaled.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/HiDream-I1_ComfyUI/resolve/main/split_files/text_encoders/llama_3.1_8b_instruct_fp8_scaled.safetensors"
+dir = "models/text_encoders"
+filename = "llama_3.1_8b_instruct_fp8_scaled.safetensors"

@@ -1,5 +1,5 @@
-[[custom_nodes]]
-url = "https://github.com/kijai/ComfyUI-DDColor"
+# [[custom_nodes]]
+# url = "https://github.com/kijai/ComfyUI-DDColor"
 
 [[custom_nodes]]
 node_id = "comfyui_face_parsing"
