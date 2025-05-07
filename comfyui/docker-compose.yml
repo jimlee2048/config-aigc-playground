@@ -1,6 +1,6 @@
 services:
   comfyui-docker:
-    image: jimlee2048/comfyui-docker:nightly
+    image: jimlee2048/comfyui-docker:latest
     container_name: comfyui-docker
     restart: unless-stopped
     networks:
