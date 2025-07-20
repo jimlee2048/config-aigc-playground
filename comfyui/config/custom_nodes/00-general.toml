@@ -104,5 +104,4 @@ node_id = "comfyui-lumi-batcher"
 url = "https://github.com/bytedance/comfyui-lumi-batcher"
 
 [[custom_nodes]]
-node_id = "fal-api"
 url = "https://github.com/gokayfem/ComfyUI-fal-API.git"
