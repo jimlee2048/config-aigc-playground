@@ -1,9 +1,27 @@
-# flex1
+# flex1-alpha
+# https://huggingface.co/ostris/Flex.1-alpha
+# [[models]]
+# url = "https://huggingface.co/ostris/Flex.1-alpha/resolve/main/Flex.1-alpha.safetensors"
+# dir = "models/checkpoints/flux1"
+# filename = "Flex.1-alpha.safetensors"
+
+# flex1-alpha-redux
+# https://huggingface.co/ostris/Flex.1-alpha-Redux
+# [[models]]
+# url = "https://huggingface.co/ostris/Flex.1-alpha-Redux/resolve/main/flex1_redux_siglip2_512.safetensors"
+# dir = "models/style_models/flux1"
+# filename = "flex1_redux_siglip2_512.safetensors"
+
+# flex2-preview
+# https://huggingface.co/ostris/Flex.2-preview
+# [[models]]
+# url = "https://huggingface.co/ostris/Flex.2-preview/resolve/main/Flex.2-preview.safetensors"
+# dir = "models/checkpoints/flux1"
+# filename = "Flex.2-preview.safetensors"
+
+# Chroma
+# https://huggingface.co/lodestones/Chroma
 [[models]]
-url = "https://huggingface.co/ostris/Flex.1-alpha/resolve/main/Flex.1-alpha.safetensors"
+url = "https://huggingface.co/lodestones/Chroma/resolve/main/chroma-unlocked-v45.safetensors"
 dir = "models/checkpoints/flux1"
-filename = "Flex.1-alpha.safetensors"
-[[models]]
-url = "https://huggingface.co/ostris/Flex.1-alpha-Redux/resolve/main/flex1_redux_siglip2_512.safetensors"
-dir = "models/style_models/flux1"
-filename = "flex1_redux_siglip2_512.safetensors"
+filename = "chroma-unlocked-v45.safetensors"

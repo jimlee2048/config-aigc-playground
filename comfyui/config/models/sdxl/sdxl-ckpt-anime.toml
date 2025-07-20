@@ -33,3 +33,9 @@ filename = "noobai-XL-Vpred-1.0.safetensors"
 url = "https://huggingface.co/nyanko7/nyaflow-xl-alpha/resolve/main/model.safetensors"
 dir = "models/checkpoints/sdxl"
 filename = "nyaflow-xl-alpha.safetensors"
+
+# Illustrious XL v2.0
+[[models]]
+url = "https://huggingface.co/OnomaAIResearch/Illustrious-XL-v2.0/resolve/main/Illustrious-XL-v2.0.safetensors"
+dir = "models/checkpoints/sdxl"
+filename = "Illustrious-XL-v2.0.safetensors"

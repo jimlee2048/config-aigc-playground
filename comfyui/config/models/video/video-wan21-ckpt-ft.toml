@@ -1,0 +1,19 @@
+# wan21-anisora
+# https://huggingface.co/IndexTeam/Index-anisora
+# [[models]]
+# url = "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1-Anisora-I2V-480P-14B_fp16.safetensors"
+# dir = "models/diffusion_models/wan21"
+# filename = "Wan2_1-Anisora-I2V-480P-14B_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Wan2_1-Anisora-I2V-480P-14B_fp8_e4m3fn.safetensors"
+dir = "models/diffusion_models/wan21"
+filename = "Wan2_1-Anisora-I2V-480P-14B_fp8_e4m3fn.safetensors"
+
+
+# pusa
+# https://huggingface.co/RaphaelLiu/PusaV1
+[[models]]
+url = "https://huggingface.co/RaphaelLiu/PusaV1/resolve/main/pusa_v1.safetensors"
+dir = "models/diffusion_models/wan21"
+filename = "pusa_v1.safetensors"

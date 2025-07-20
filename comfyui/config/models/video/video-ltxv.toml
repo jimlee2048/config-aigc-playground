@@ -1,0 +1,64 @@
+# https://huggingface.co/Lightricks/LTX-Video
+
+# dependency
+[[custom_nodes]]
+url = "https://github.com/Lightricks/ComfyUI-LTXVideo"
+
+# v0.9.8-CKPT-13B
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltxv-13b-0.9.8-dev.safetensors"
+dir = "models/checkpoints/ltxv"
+filename = "ltxv-13b-0.9.8-dev.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltxv-13b-0.9.8-dev-fp8.safetensors"
+dir = "models/checkpoints/ltxv"
+filename = "ltxv-13b-0.9.8-dev-fp8.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltxv-13b-0.9.8-distilled.safetensors"
+dir = "models/checkpoints/ltxv"
+filename = "ltxv-13b-0.9.8-distilled.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltxv-13b-0.9.8-distilled-fp8.safetensors"
+dir = "models/checkpoints/ltxv"
+filename = "ltxv-13b-0.9.8-distilled-fp8.safetensors"
+
+# upscaler
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video/blob/main/ltxv-spatial-upscaler-0.9.8.safetensors"
+dir = "models/upscale_models"
+filename = "ltxv-spatial-upscaler-0.9.8.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video/resolve/main/ltxv-temporal-upscaler-0.9.8.safetensors"
+dir = "models/upscale_models"
+filename = "ltxv-temporal-upscaler-0.9.8.safetensors"
+
+# control: ic-lora
+## detailer
+## https://huggingface.co/Lightricks/LTX-Video-ICLoRA-detailer-13b-0.9.8
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video-ICLoRA-detailer-13b-0.9.8/resolve/main/ltxv-098-ic-lora-detailer-comfyui.safetensors"
+dir = "models/loras/ltxv"
+filename = "ltxv-098-ic-lora-detailer-comfyui.safetensors"
+
+## pose
+## https://huggingface.co/Lightricks/LTX-Video-ICLoRA-pose-13b-0.9.7
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video-ICLoRA-pose-13b-0.9.7/resolve/main/ltxv-097-ic-lora-pose-control-comfyui.safetensors"
+dir = "models/loras/ltxv"
+filename = "ltxv-097-ic-lora-pose-control-comfyui.safetensors"
+
+## depth
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video-ICLoRA-depth-13b-0.9.7/resolve/main/ltxv-097-ic-lora-depth-control-comfyui.safetensors"
+dir = "models/loras/ltxv"
+filename = "ltxv-097-ic-lora-depth-control-comfyui.safetensors"
+
+## canny
+[[models]]
+url = "https://huggingface.co/Lightricks/LTX-Video-ICLoRA-canny-13b-0.9.7/resolve/main/ltxv-097-ic-lora-canny-control-comfyui.safetensors"
+dir = "models/loras/ltxv"
+filename = "ltxv-097-ic-lora-canny-control-comfyui.safetensors"

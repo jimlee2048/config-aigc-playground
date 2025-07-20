@@ -1,0 +1,12 @@
+# lightx2v
+## 14B-I2V-480P
+[[models]]
+url = "https://huggingface.co/lightx2v/Wan2.1-I2V-14B-480P-StepDistill-CfgDistill-Lightx2v/resolve/main/loras/Wan21_I2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors"
+dir = "models/loras/wan21"
+filename = "Wan21_I2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors"
+
+## 14B-T2V
+[[models]]
+url = "https://huggingface.co/lightx2v/Wan2.1-T2V-14B-StepDistill-CfgDistill-Lightx2v/resolve/main/loras/Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors"
+dir = "models/loras/wan21"
+filename = "Wan21_T2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors"

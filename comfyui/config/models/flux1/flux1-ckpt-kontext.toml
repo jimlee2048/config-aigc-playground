@@ -1,0 +1,11 @@
+# origin
+[[models]]
+url = "https://huggingface.co/black-forest-labs/FLUX.1-Kontext-dev/resolve/main/flux1-kontext-dev.safetensors"
+dir = "models/diffusion_models/flux1"
+filename = "flux1-kontext-dev.safetensors"
+
+# fp8_e4m3fn
+[[models]]
+url = "https://huggingface.co/Comfy-Org/flux1-kontext-dev_ComfyUI/resolve/main/split_files/diffusion_models/flux1-dev-kontext_fp8_scaled.safetensors"
+dir = "models/diffusion_models/flux1"
+filename = "flux1-kontext-dev_fp8_scaled.safetensors"

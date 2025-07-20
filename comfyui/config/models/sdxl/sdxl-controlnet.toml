@@ -8,7 +8,6 @@ url = "https://huggingface.co/2vXpSwA7/iroiro-lora/resolve/main/test_controlnet2
 dir = "models/controlnet/sdxl"
 filename = "controlnet-sdxl-anytest_v4-marged.safetensors"
 
-
 [[models]]
 url = "https://huggingface.co/TheMistoAI/MistoLine/resolve/main/mistoLine_fp16.safetensors"
 dir = "models/controlnet/sdxl"

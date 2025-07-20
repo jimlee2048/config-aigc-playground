@@ -1,0 +1,5 @@
+# fpv-motion
+[[models]]
+url = "https://huggingface.co/lovis93/Motion-Lora-Camera-Push-In-Wan-14B-720p-I2V/resolve/main/motionpushin-v5-wan-i2v-14b-720p-400.safetensors"
+dir = "models/loras/wan21"
+filename = "motionpushin-v5-wan-i2v-14b-720p-400.safetensors"

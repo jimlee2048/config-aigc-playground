@@ -15,10 +15,16 @@ dir = "models/checkpoints/sdxl"
 filename = "OpenDalleV1.1.safetensors"
 
 # JuggeranutXL XI
+# [[models]]
+# url = "https://huggingface.co/RunDiffusion/Juggernaut-XI-v11/resolve/main/Juggernaut-XI-byRunDiffusion.safetensors"
+# dir = "models/checkpoints/sdxl"
+# filename = "Juggernaut-XL-v11.safetensors"
+
+# JuggeranutXL V12
 [[models]]
-url = "https://huggingface.co/RunDiffusion/Juggernaut-XI-v11/resolve/main/Juggernaut-XI-byRunDiffusion.safetensors"
+url = "https://civitai.com/api/download/models/1759168?type=Model&format=SafeTensor&size=full&fp=fp16"
 dir = "models/checkpoints/sdxl"
-filename = "Juggernaut-XL-v11.safetensors"
+filename = "Juggernaut-XL-v12.safetensors"
 
 # LEOSAM's HelloWorld XL V7
 # https://civitai.com/models/43977/leosams-helloworld-xl

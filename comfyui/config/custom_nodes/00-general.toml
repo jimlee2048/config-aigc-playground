@@ -48,16 +48,10 @@ url = "https://github.com/Trung0246/ComfyUI-0246"
 [[custom_nodes]]
 node_id = "comfy-mtb"
 url = "https://github.com/melMass/comfy_mtb"
-# https://github.com/melMass/comfy_mtb/issues/230
-version = "nightly"
 
 [[custom_nodes]]
 node_id = "comfyui_fill-nodes"
 url = "https://github.com/filliptm/ComfyUI_Fill-Nodes"
-
-[[custom_nodes]]
-node_id = "comfyui_marascott_nodes"
-url = "https://github.com/MaraScott/ComfyUI_MaraScott_Nodes"
 
 [[custom_nodes]]
 node_id = "comfyui_ipadapter_plus"
@@ -106,9 +100,9 @@ node_id = "comfyui_profilerx"
 url = "https://github.com/ryanontheinside/ComfyUI_ProfilerX"
 
 [[custom_nodes]]
-# node_id = "comfyui-to-python-extension"
-url = "https://github.com/pydn/ComfyUI-to-Python-Extension"
+node_id = "comfyui-lumi-batcher"
+url = "https://github.com/bytedance/comfyui-lumi-batcher"
 
 [[custom_nodes]]
-node_id = "comfyui_fizznodes"
-url = "https://github.com/FizzleDorf/ComfyUI_FizzNodes"
+node_id = "fal-api"
+url = "https://github.com/gokayfem/ComfyUI-fal-API.git"
