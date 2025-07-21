@@ -1,0 +1,29 @@
+# t5
+[[models]]
+url = "https://huggingface.co/nunchaku-tech/nunchaku-t5/resolve/main/awq-int4-flux.1-t5xxl.safetensors"
+dir = "models/text_encoders"
+filename = "awq-int4-flux.1-t5xxl.safetensors"
+
+# flux1-dev
+[[models]]
+url = "https://huggingface.co/nunchaku-tech/nunchaku-flux.1-dev/resolve/main/svdq-fp4_r32-flux.1-dev.safetensors"
+dir = "models/diffusion_models/flux1"
+filename = "svdq-fp4_r32-flux.1-dev.safetensors"
+
+# flux1-schnell
+# [[models]]
+# url = "https://huggingface.co/nunchaku-tech/nunchaku-flux.1-schnell/resolve/main/svdq-fp4_r32-flux.1-schnell.safetensors"
+# dir = "models/diffusion_models/flux1"
+# filename = "svdq-fp4_r32-flux.1-schnell.safetensors"
+
+# flux1-fill-dev
+[[models]]
+url = "https://huggingface.co/nunchaku-tech/nunchaku-flux.1-fill-dev/resolve/main/svdq-fp4_r32-flux.1-fill-dev.safetensors"
+dir = "models/diffusion_models/flux1"
+filename = "svdq-fp4_r32-flux.1-fill-dev.safetensors"
+
+# flux1-kontext-dev
+[[models]]
+url = "https://huggingface.co/nunchaku-tech/nunchaku-flux.1-kontext-dev/resolve/main/svdq-fp4_r32-flux.1-kontext-dev.safetensors"
+dir = "models/diffusion_models/flux1"
+filename = "svdq-fp4_r32-flux.1-kontext-dev.safetensors"

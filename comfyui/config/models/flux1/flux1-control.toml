@@ -12,3 +12,8 @@ filename = "flux1-depth-dev-lora.safetensors"
 url = "https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro-2.0/resolve/main/diffusion_pytorch_model.safetensors"
 dir = "models/controlnet/flux1"
 filename = "flux1-dev-controlnet-union-pro-2.0.safetensors"
+
+[[models]]
+url = "https://huggingface.co/alimama-creative/FLUX.1-dev-Controlnet-Inpainting-Beta/resolve/main/diffusion_pytorch_model.safetensors"
+dir = "models/controlnet/flux1"
+filename = "flux1-dev-controlnet-inpainting-beta.safetensors"

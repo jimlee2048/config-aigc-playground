@@ -1,8 +1,8 @@
 # origin
-[[models]]
-url = "https://huggingface.co/black-forest-labs/FLUX.1-Kontext-dev/resolve/main/flux1-kontext-dev.safetensors"
-dir = "models/diffusion_models/flux1"
-filename = "flux1-kontext-dev.safetensors"
+# [[models]]
+# url = "https://huggingface.co/black-forest-labs/FLUX.1-Kontext-dev/resolve/main/flux1-kontext-dev.safetensors"
+# dir = "models/diffusion_models/flux1"
+# filename = "flux1-kontext-dev.safetensors"
 
 # fp8_e4m3fn
 [[models]]
