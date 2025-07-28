@@ -1,0 +1,27 @@
+# ti2v-5b-fp16
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_ti2v_5B_fp16.safetensors"
+
+# t2v-14b-fp16
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp16.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_t2v_high_noise_14B_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp16.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_t2v_low_noise_14B_fp16.safetensors"
+
+# t2v-14b-fp8
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_t2v_high_noise_14B_fp8_scaled.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_t2v_low_noise_14B_fp8_scaled.safetensors"
