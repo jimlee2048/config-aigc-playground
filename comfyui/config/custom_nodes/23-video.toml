@@ -9,3 +9,7 @@ url = "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
 [[custom_nodes]]
 node_id = "comfyui-frame-interpolation"
 url = "https://github.com/Fannovel16/ComfyUI-Frame-Interpolation"
+
+[[custom_nodes]]
+node_id = "ComfyUI-WanVideoWrapper"
+url = "https://github.com/kijai/ComfyUI-WanVideoWrapper"
