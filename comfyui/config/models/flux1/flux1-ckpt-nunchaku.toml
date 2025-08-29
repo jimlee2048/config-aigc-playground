@@ -27,3 +27,9 @@ filename = "svdq-fp4_r32-flux.1-fill-dev.safetensors"
 url = "https://huggingface.co/nunchaku-tech/nunchaku-flux.1-kontext-dev/resolve/main/svdq-fp4_r32-flux.1-kontext-dev.safetensors"
 dir = "models/diffusion_models/flux1"
 filename = "svdq-fp4_r32-flux.1-kontext-dev.safetensors"
+
+# flux1-krea-dev
+[[models]]
+url = "https://huggingface.co/nunchaku-tech/nunchaku-flux.1-krea-dev/resolve/main/svdq-fp4_r32-flux.1-krea-dev.safetensors"
+dir = "models/diffusion_models/flux1"
+filename = "svdq-fp4_r32-flux.1-krea-dev.safetensors"

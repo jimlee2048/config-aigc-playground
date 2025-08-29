@@ -19,9 +19,14 @@
 # dir = "models/checkpoints/flux1"
 # filename = "Flex.2-preview.safetensors"
 
-# Chroma
-# https://huggingface.co/lodestones/Chroma
-[[models]]
-url = "https://huggingface.co/lodestones/Chroma/resolve/main/chroma-unlocked-v45.safetensors"
-dir = "models/checkpoints/flux1"
-filename = "chroma-unlocked-v45.safetensors"
+# Chroma1
+# https://huggingface.co/lodestones
+# [[models]]
+# url = "https://huggingface.co/lodestones/Chroma1-Base/resolve/main/Chroma1-Base.safetensors"
+# dir = "models/checkpoints/flux1"
+# filename = "Chroma1-Base.safetensors"
+
+# [[models]]
+# url = "https://huggingface.co/lodestones/Chroma1-HD/resolve/main/Chroma1-HD.safetensors"
+# dir = "models/checkpoints/flux1"
+# filename = "Chroma1-HD.safetensors"
