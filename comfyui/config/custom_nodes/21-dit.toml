@@ -3,8 +3,5 @@ node_id = "ComfyUI-nunchaku"
 url = "https://github.com/nunchaku-tech/ComfyUI-nunchaku"
 
 [[custom_nodes]]
-url = "https://github.com/logtd/ComfyUI-Fluxtapoz"
-
-[[custom_nodes]]
 node_id = "teacache"
 url = "https://github.com/welltop-cn/ComfyUI-TeaCache"
