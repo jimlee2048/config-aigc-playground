@@ -1,0 +1,11 @@
+# ckpt fp8
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_fp8_e4m3fn.safetensors"
+dir = "models/diffusion_models/qwen-image"
+filename = "qwen_image_edit_fp8_e4m3fn.safetensors"
+
+# acc lora
+[[models]]
+url = "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/main/Qwen-Image-Edit-Lightning-8steps-V1.0.safetensors"
+dir = "models/loras/qwen-image"
+filename = "Qwen-Image-Edit-Lightning-8steps-V1.0.safetensors"
