@@ -1,0 +1,25 @@
+# Qwen-Image-DiffSynth-ControlNets
+# https://www.modelscope.cn/models/DiffSynth-Studio/Qwen-Image-In-Context-Control-Union
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Qwen-Image-DiffSynth-ControlNets/resolve/main/split_files/loras/qwen_image_union_diffsynth_lora.safetensors"
+dir = "models/loras/qwen-image"
+filename = "qwen_image_union_diffsynth_lora.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Qwen-Image-DiffSynth-ControlNets/resolve/main/split_files/model_patches/qwen_image_canny_diffsynth_controlnet.safetensors"
+dir = "models/model_patches/qwen-image"
+filename = "qwen_image_canny_diffsynth_controlnet.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Qwen-Image-DiffSynth-ControlNets/resolve/main/split_files/model_patches/qwen_image_depth_diffsynth_controlnet.safetensors"
+dir = "models/model_patches/qwen-image"
+filename = "qwen_image_depth_diffsynth_controlnet.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Qwen-Image-DiffSynth-ControlNets/resolve/main/split_files/model_patches/qwen_image_inpaint_diffsynth_controlnet.safetensors"
+dir = "models/model_patches/qwen-image"
+filename = "qwen_image_inpaint_diffsynth_controlnet.safetensors"
+
+# Qwen-Image-InstantX-ControlNets
+# https://huggingface.co/InstantX/Qwen-Image-ControlNet-Union
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Qwen-Image-InstantX-ControlNets/resolve/main/split_files/controlnet/Qwen-Image-InstantX-ControlNet-Union.safetensors"
+dir = "models/controlnet/qwen-image"
+filename = "Qwen-Image-InstantX-ControlNet-Union.safetensors"
