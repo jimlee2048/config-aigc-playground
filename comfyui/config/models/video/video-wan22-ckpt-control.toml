@@ -1,0 +1,29 @@
+# alibaba-pai/Wan2.2-Fun-A14B-Control
+# https://huggingface.co/alibaba-pai/Wan2.2-Fun-A14B-Control
+## camera
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_camera_high_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_fun_camera_high_noise_14B_fp8_scaled.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_camera_low_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_fun_camera_low_noise_14B_fp8_scaled.safetensors"
+## control
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_control_high_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_fun_control_high_noise_14B_fp8_scaled.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_control_low_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_fun_control_low_noise_14B_fp8_scaled.safetensors"
+## inpaint
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_inpaint_high_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_fun_inpaint_high_noise_14B_fp8_scaled.safetensors"
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_fun_inpaint_low_noise_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_fun_inpaint_low_noise_14B_fp8_scaled.safetensors"

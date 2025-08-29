@@ -1,0 +1,19 @@
+# lightx2v/Wan2.2-Lightning
+## i2v-a14b
+[[models]]
+url = "https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-I2V-A14B-4steps-lora-rank64-Seko-V1/high_noise_model.safetensors"
+dir = "models/loras/wan22"
+filename = "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
+[[models]]
+url = "https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-I2V-A14B-4steps-lora-rank64-Seko-V1/low_noise_model.safetensors"
+dir = "models/loras/wan22"
+filename = "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+## t2v-a14b
+[[models]]
+url = "https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V1.1/high_noise_model.safetensors"
+dir = "models/loras/wan22"
+filename = "wan2.2_t2v_lightx2v_4steps_lora_v1.1_high_noise.safetensors"
+[[models]]
+url = "https://huggingface.co/lightx2v/Wan2.2-Lightning/resolve/main/Wan2.2-T2V-A14B-4steps-lora-rank64-Seko-V1.1/low_noise_model.safetensors"
+dir = "models/loras/wan22"
+filename = "wan2.2_t2v_lightx2v_4steps_lora_v1.1_low_noise.safetensors"

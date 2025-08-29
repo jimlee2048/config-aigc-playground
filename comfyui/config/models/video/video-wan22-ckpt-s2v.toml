@@ -1,0 +1,9 @@
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/audio_encoders/wav2vec2_large_english_fp16.safetensors"
+dir = "models/audio_encoders"
+filename = "wav2vec2_large_english_fp16.safetensors"
+
+[[models]]
+url = "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_s2v_14B_fp8_scaled.safetensors"
+dir = "models/diffusion_models/wan22"
+filename = "wan2.2_s2v_14B_fp8_scaled.safetensors"
