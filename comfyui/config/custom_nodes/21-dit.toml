@@ -1,7 +1,7 @@
 [[custom_nodes]]
 node_id = "ComfyUI-nunchaku"
 url = "https://github.com/nunchaku-tech/ComfyUI-nunchaku"
-version = "latest"
+version = "0.3.4"
 
 [[custom_nodes]]
 node_id = "teacache"
